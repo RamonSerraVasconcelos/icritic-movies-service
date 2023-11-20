@@ -17,10 +17,10 @@ import javax.validation.constraints.NotBlank;
 public class CategoryRequestDto {
 
     @NotBlank(message = "Category name is required")
-    @Length(min = 2, message = "Category length must be at least 2 characters long")
+    @Length(min = 2, message = "Category length must be between 2 and 75 characters long")
     private String name;
 
     @NotBlank(message = "Category description is required")
-    @Length(min = 4, message = "Category length must be at least 4 characters long")
+    @Length(min = 4, max = 255, message = "Category length must be between 4 and 255 characters long")
     private String description;
 }
