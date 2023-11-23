@@ -18,17 +18,13 @@ import java.util.Optional;
 @Slf4j
 public class CreateCategoryUseCase {
 
-    private final ValidateUserRoleUseCase validateUserRoleUseCase;
-
     private final FindCategoryByNameBoundary findCategoryByNameBoundary;
 
     private final SaveCategoryBoundary saveCategoryBoundary;
 
-    public Category execute(String name, String description, String userRole) {
+    public Category execute(String name, String description) {
         try {
             log.info("Creating category {}", name);
-
-            validateUserRoleUseCase.execute(List.of(Role.MODERATOR), userRole);
 
             Optional<Category> categoryOptional = findCategoryByNameBoundary.execute(name);
 
