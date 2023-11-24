@@ -1,16 +1,13 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.boundary.FindCategoryByNameBoundary;
 import com.icritic.movies.core.usecase.boundary.SaveCategoryBoundary;
-import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.exception.ResourceConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -28,7 +25,7 @@ public class CreateCategoryUseCase {
 
             Optional<Category> categoryOptional = findCategoryByNameBoundary.execute(name);
 
-            if(categoryOptional.isPresent()) {
+            if (categoryOptional.isPresent()) {
                 throw new ResourceConflictException("Category already exists");
             }
 
