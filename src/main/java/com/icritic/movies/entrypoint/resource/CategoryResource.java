@@ -4,6 +4,7 @@ import com.icritic.movies.core.model.Category;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.category.CreateCategoryUseCase;
 import com.icritic.movies.core.usecase.category.FindAllCategoriesUseCase;
+import com.icritic.movies.core.usecase.category.FindCategoryByIdUseCase;
 import com.icritic.movies.core.usecase.category.UpdateCategoryUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.category.CategoryRequestDto;
@@ -43,6 +44,8 @@ public class CategoryResource {
 
     private final FindAllCategoriesUseCase findAllCategoriesUseCase;
 
+    private final FindCategoryByIdUseCase findCategoryByIdUseCase;
+
     @PostMapping
     public ResponseEntity<CategoryResponseDto> createCategory(HttpServletRequest request, @RequestBody CategoryRequestDto categoryRequestDto) {
         validateUserRole(request, List.of(Role.MODERATOR));
@@ -78,6 +81,15 @@ public class CategoryResource {
         List<Category> categories = findAllCategoriesUseCase.execute();
 
         List<CategoryResponseDto> response = categories.stream().map(CategoryDtoMapper.INSTANCE::categoryToCategoryResponsetDto).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponseDto> findCategoryById(@PathVariable Long id) {
+        Category category = findCategoryByIdUseCase.execute(id);
+
+        CategoryResponseDto response = CategoryDtoMapper.INSTANCE.categoryToCategoryResponsetDto(category);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
