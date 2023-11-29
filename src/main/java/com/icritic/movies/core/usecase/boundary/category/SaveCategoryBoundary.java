@@ -1,4 +1,4 @@
-package com.icritic.movies.core.usecase.boundary;
+package com.icritic.movies.core.usecase.boundary.category;
 
 import com.icritic.movies.core.model.Category;
 

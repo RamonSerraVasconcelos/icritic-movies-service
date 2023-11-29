@@ -1,7 +1,7 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.usecase.boundary.FindAllCategoriesBoundary;
+import com.icritic.movies.core.usecase.boundary.category.FindAllCategoriesBoundary;
 import com.icritic.movies.core.usecase.fixture.CategoryFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
