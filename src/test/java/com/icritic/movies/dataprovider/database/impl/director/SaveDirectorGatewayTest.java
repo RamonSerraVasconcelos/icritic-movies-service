@@ -1,6 +1,7 @@
 package com.icritic.movies.dataprovider.database.impl.director;
 
 import com.icritic.movies.core.model.Director;
+import com.icritic.movies.core.usecase.fixture.DirectorFixture;
 import com.icritic.movies.dataprovider.database.entity.DirectorEntity;
 import com.icritic.movies.dataprovider.database.fixture.DirectorEntityFixture;
 import com.icritic.movies.dataprovider.database.repository.DirectorEntityRepository;
@@ -10,28 +11,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindDirectorByIdGatewayTest {
+class SaveDirectorGatewayTest {
 
     @InjectMocks
-    private FindDirectorByIdGateway findDirectorByIdGateway;
+    private SaveDirectorGateway saveDirectorGateway;
 
     @Mock
-    private DirectorEntityRepository repository;
+    private DirectorEntityRepository directorEntityRepository;
 
     @Test
-    void givenValidId_thenFind_andReturnDirector() {
+    void givenValidDirector_whenExecute_thenSave_andReturnDirector() {
+        Director director = DirectorFixture.load();
         DirectorEntity directorEntity = DirectorEntityFixture.load();
 
-        when(repository.findById(1L)).thenReturn(Optional.of(directorEntity));
+        when(directorEntityRepository.save(any(DirectorEntity.class))).thenReturn(directorEntity);
 
-        Optional<Director> director = findDirectorByIdGateway.execute(1L);
+        Director returnedDirector = saveDirectorGateway.execute(director);
 
-        assertThat(director).isPresent();
+        assertThat(returnedDirector).isNotNull();
     }
 }
