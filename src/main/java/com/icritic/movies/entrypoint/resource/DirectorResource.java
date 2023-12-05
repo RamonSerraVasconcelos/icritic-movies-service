@@ -3,6 +3,7 @@ package com.icritic.movies.entrypoint.resource;
 import com.icritic.movies.core.model.Director;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.director.CreateDirectorUseCase;
+import com.icritic.movies.core.usecase.director.FindAllDirectorUseCase;
 import com.icritic.movies.core.usecase.director.UpdateDirectorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.director.DirectorRequestDto;
@@ -12,6 +13,7 @@ import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +26,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/movies/directors")
@@ -37,6 +40,8 @@ public class DirectorResource {
     private final CreateDirectorUseCase createDirectorUseCase;
 
     private final UpdateDirectorUseCase updateDirectorUseCase;
+
+    private final FindAllDirectorUseCase findAllDirectorUseCase;
 
     @PostMapping
     public ResponseEntity<DirectorResponseDto> createDirector(HttpServletRequest request, @RequestBody DirectorRequestDto directorRequestDto) {
@@ -65,6 +70,15 @@ public class DirectorResource {
         Director updatedDirector = updateDirectorUseCase.execute(id, directorRequestDto.getName(), directorRequestDto.getDescription(), directorRequestDto.getCountryId());
 
         DirectorResponseDto response = DirectorDtoMapper.INSTANCE.directorToDirectorResponseDto(updatedDirector);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    private ResponseEntity<List<DirectorResponseDto>> findAllDirectors() {
+        List<Director> directors = findAllDirectorUseCase.execute();
+
+        List<DirectorResponseDto> response = directors.stream().map(DirectorDtoMapper.INSTANCE::directorToDirectorResponseDto).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
