@@ -4,6 +4,7 @@ import com.icritic.movies.core.model.Director;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.director.CreateDirectorUseCase;
 import com.icritic.movies.core.usecase.director.FindAllDirectorUseCase;
+import com.icritic.movies.core.usecase.director.FindDirectorByIdUseCase;
 import com.icritic.movies.core.usecase.director.UpdateDirectorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.director.DirectorRequestDto;
@@ -43,6 +44,8 @@ public class DirectorResource {
 
     private final FindAllDirectorUseCase findAllDirectorUseCase;
 
+    private final FindDirectorByIdUseCase findDirectorByIdUseCase;
+
     @PostMapping
     public ResponseEntity<DirectorResponseDto> createDirector(HttpServletRequest request, @RequestBody DirectorRequestDto directorRequestDto) {
         validateUserRole(request, List.of(Role.MODERATOR));
@@ -79,6 +82,15 @@ public class DirectorResource {
         List<Director> directors = findAllDirectorUseCase.execute();
 
         List<DirectorResponseDto> response = directors.stream().map(DirectorDtoMapper.INSTANCE::directorToDirectorResponseDto).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    private ResponseEntity<DirectorResponseDto> findDirectorById(@PathVariable Long id) {
+        Director director = findDirectorByIdUseCase.execute(id);
+
+        DirectorResponseDto response = DirectorDtoMapper.INSTANCE.directorToDirectorResponseDto(director);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
