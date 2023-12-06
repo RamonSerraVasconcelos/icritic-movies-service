@@ -1,8 +1,9 @@
-package com.icritic.movies.dataprovider.database.impl;
+package com.icritic.movies.dataprovider.database.impl.category;
 
 import com.icritic.movies.core.model.Category;
 import com.icritic.movies.dataprovider.database.entity.CategoryEntity;
 import com.icritic.movies.dataprovider.database.fixture.CategoryEntityFixture;
+import com.icritic.movies.dataprovider.database.impl.category.FindCategoryByIdGateway;
 import com.icritic.movies.dataprovider.database.repository.CategoryEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,23 +19,22 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindCategoryByNameGatewayTest {
+class FindCategoryByIdGatewayTest {
 
     @InjectMocks
-    private FindCategoryByNameGateway findCategoryByNameGateway;
+    private FindCategoryByIdGateway findCategoryByIdGateway;
 
     @Mock
     private CategoryEntityRepository repository;
 
     @Test
-    void givenValidName_whenCategoryIsFound_thenReturnCategory() {
+    void givenValidId_whenCategoryIsFound_thenReturnCategory() {
         CategoryEntity categoryEntity = CategoryEntityFixture.load();
+        when(repository.findById(1L)).thenReturn(Optional.of(categoryEntity));
 
-        when(repository.findByName("Action")).thenReturn(categoryEntity);
+        Optional<Category> returnedCategory = findCategoryByIdGateway.execute(1L);
 
-        Optional<Category> returnedCategory = findCategoryByNameGateway.execute("Action");
-
-        verify(repository).findByName("Action");
+        verify(repository).findById(1L);
 
         assertTrue(returnedCategory.isPresent());
         assertThat(returnedCategory.get()).usingRecursiveComparison().isEqualTo(categoryEntity);

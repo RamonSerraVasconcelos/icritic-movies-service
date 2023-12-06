@@ -1,7 +1,7 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.usecase.boundary.FindAllCategoriesBoundary;
+import com.icritic.movies.core.usecase.boundary.category.FindAllCategoriesBoundary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

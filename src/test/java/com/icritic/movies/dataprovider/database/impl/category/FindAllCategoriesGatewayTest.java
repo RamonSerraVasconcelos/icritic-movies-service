@@ -1,8 +1,9 @@
-package com.icritic.movies.dataprovider.database.impl;
+package com.icritic.movies.dataprovider.database.impl.category;
 
 import com.icritic.movies.core.model.Category;
 import com.icritic.movies.dataprovider.database.entity.CategoryEntity;
 import com.icritic.movies.dataprovider.database.fixture.CategoryEntityFixture;
+import com.icritic.movies.dataprovider.database.impl.category.FindAllCategoriesGateway;
 import com.icritic.movies.dataprovider.database.repository.CategoryEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

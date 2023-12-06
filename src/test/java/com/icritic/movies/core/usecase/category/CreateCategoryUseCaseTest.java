@@ -1,8 +1,8 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.usecase.boundary.FindCategoryByNameBoundary;
-import com.icritic.movies.core.usecase.boundary.SaveCategoryBoundary;
+import com.icritic.movies.core.usecase.boundary.category.FindCategoryByNameBoundary;
+import com.icritic.movies.core.usecase.boundary.category.SaveCategoryBoundary;
 import com.icritic.movies.core.usecase.fixture.CategoryFixture;
 import com.icritic.movies.exception.ResourceConflictException;
 import org.junit.jupiter.api.Test;
