@@ -3,7 +3,7 @@ package com.icritic.movies.entrypoint.resource;
 import com.icritic.movies.core.model.Director;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.director.CreateDirectorUseCase;
-import com.icritic.movies.core.usecase.director.FindAllDirectorUseCase;
+import com.icritic.movies.core.usecase.director.FindAllDirectorsUseCase;
 import com.icritic.movies.core.usecase.director.FindDirectorByIdUseCase;
 import com.icritic.movies.core.usecase.director.UpdateDirectorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
@@ -42,7 +42,7 @@ public class DirectorResource {
 
     private final UpdateDirectorUseCase updateDirectorUseCase;
 
-    private final FindAllDirectorUseCase findAllDirectorUseCase;
+    private final FindAllDirectorsUseCase findAllDirectorUseCase;
 
     private final FindDirectorByIdUseCase findDirectorByIdUseCase;
 
