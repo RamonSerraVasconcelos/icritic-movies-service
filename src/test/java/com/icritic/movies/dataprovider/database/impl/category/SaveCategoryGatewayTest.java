@@ -1,9 +1,10 @@
-package com.icritic.movies.dataprovider.database.impl;
+package com.icritic.movies.dataprovider.database.impl.category;
 
 import com.icritic.movies.core.model.Category;
+import com.icritic.movies.core.usecase.fixture.CategoryFixture;
 import com.icritic.movies.dataprovider.database.entity.CategoryEntity;
 import com.icritic.movies.dataprovider.database.fixture.CategoryEntityFixture;
-import com.icritic.movies.dataprovider.database.impl.category.FindCategoryByNameGateway;
+import com.icritic.movies.dataprovider.database.impl.category.SaveCategoryGateway;
 import com.icritic.movies.dataprovider.database.repository.CategoryEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,33 +12,31 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindCategoryByNameGatewayTest {
+class SaveCategoryGatewayTest {
 
     @InjectMocks
-    private FindCategoryByNameGateway findCategoryByNameGateway;
+    private SaveCategoryGateway saveCategoryGateway;
 
     @Mock
     private CategoryEntityRepository repository;
 
     @Test
-    void givenValidName_whenCategoryIsFound_thenReturnCategory() {
+    void givenValidCategory_whenCategoryIsSaved_thenReturnSavedCategory() {
+        Category category = CategoryFixture.load();
         CategoryEntity categoryEntity = CategoryEntityFixture.load();
 
-        when(repository.findByName("Action")).thenReturn(categoryEntity);
+        when(repository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
 
-        Optional<Category> returnedCategory = findCategoryByNameGateway.execute("Action");
+        Category returnedCategory = saveCategoryGateway.execute(category);
 
-        verify(repository).findByName("Action");
+        verify(repository).save(any(CategoryEntity.class));
 
-        assertTrue(returnedCategory.isPresent());
-        assertThat(returnedCategory.get()).usingRecursiveComparison().isEqualTo(categoryEntity);
+        assertThat(returnedCategory).usingRecursiveComparison().isEqualTo(categoryEntity);
     }
 }

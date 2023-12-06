@@ -1,4 +1,4 @@
-package com.icritic.movies.dataprovider.database.impl;
+package com.icritic.movies.dataprovider.database.impl.category;
 
 import com.icritic.movies.core.model.Category;
 import com.icritic.movies.dataprovider.database.entity.CategoryEntity;
