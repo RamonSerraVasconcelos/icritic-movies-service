@@ -1,9 +1,6 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.usecase.boundary.category.FindCategoryByIdBoundary;
-import com.icritic.movies.core.usecase.boundary.category.FindCategoryByNameBoundary;
-import com.icritic.movies.core.usecase.boundary.category.SaveCategoryBoundary;
 import com.icritic.movies.exception.ResourceConflictException;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;

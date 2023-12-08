@@ -2,7 +2,6 @@ package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Country;
 import com.icritic.movies.core.model.Director;
-import com.icritic.movies.core.usecase.boundary.director.SaveDirectorBoundary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

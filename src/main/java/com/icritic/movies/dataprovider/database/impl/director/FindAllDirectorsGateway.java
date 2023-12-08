@@ -1,7 +1,7 @@
 package com.icritic.movies.dataprovider.database.impl.director;
 
 import com.icritic.movies.core.model.Director;
-import com.icritic.movies.core.usecase.boundary.director.FindAllDirectorsBoundary;
+import com.icritic.movies.core.usecase.director.FindAllDirectorsBoundary;
 import com.icritic.movies.dataprovider.database.mapper.DirectorEntityMapper;
 import com.icritic.movies.dataprovider.database.repository.DirectorEntityRepository;
 import lombok.RequiredArgsConstructor;
