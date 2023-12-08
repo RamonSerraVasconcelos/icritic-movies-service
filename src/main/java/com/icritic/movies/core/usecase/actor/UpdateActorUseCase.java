@@ -18,18 +18,23 @@ public class UpdateActorUseCase {
     private final SaveActorBoundary saveActorBoundary;
 
     public Actor execute(Long id, String name, String description, Long countryId) {
-        Optional<Actor> optionalActor = findActorByIdBoundary.execute(id);
+        try {
+            Optional<Actor> optionalActor = findActorByIdBoundary.execute(id);
 
-        if(optionalActor.isEmpty()) {
-            throw new ResourceNotFoundException("Actor not found");
+            if(optionalActor.isEmpty()) {
+                throw new ResourceNotFoundException("Actor not found");
+            }
+
+            Actor actor = optionalActor.get();
+
+            actor.setName(name);
+            actor.setDescription(description);
+            actor.getCountry().setId(countryId);
+
+            return saveActorBoundary.execute(actor);
+        } catch (Exception e) {
+            log.error("Error updating actor with id: [{}]", id, e);
+            throw e;
         }
-
-        Actor actor = optionalActor.get();
-
-        actor.setName(name);
-        actor.setDescription(description);
-        actor.getCountry().setId(countryId);
-
-        return saveActorBoundary.execute(actor);
     }
 }
