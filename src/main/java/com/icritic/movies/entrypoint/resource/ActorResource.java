@@ -3,6 +3,7 @@ package com.icritic.movies.entrypoint.resource;
 import com.icritic.movies.core.model.Actor;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.actor.CreateActorUseCase;
+import com.icritic.movies.core.usecase.actor.FindAllActorsUseCase;
 import com.icritic.movies.core.usecase.actor.UpdateActorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.actor.ActorRequestDto;
@@ -12,6 +13,7 @@ import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +26,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/movies/actors")
@@ -37,6 +40,8 @@ public class ActorResource {
     private final CreateActorUseCase createActorUseCase;
 
     private final UpdateActorUseCase updateDirectorUseCase;
+
+    private final FindAllActorsUseCase findAllActorsUseCase;
 
     @PostMapping
     public ResponseEntity<ActorResponseDto> createActor(HttpServletRequest request, @RequestBody ActorRequestDto actorRequestDto) {
@@ -66,6 +71,15 @@ public class ActorResource {
         Actor actor = updateDirectorUseCase.execute(id, actorRequestDto.getName(), actorRequestDto.getDescription(), actorRequestDto.getCountryId());
 
         ActorResponseDto response = ActorDtoMapper.INSTANCE.actorToActorResponseDto(actor);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ActorResponseDto>> findAllActors() {
+        List<Actor> actors = findAllActorsUseCase.execute();
+
+        List<ActorResponseDto> response = actors.stream().map(ActorDtoMapper.INSTANCE::actorToActorResponseDto).collect(Collectors.toList());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
