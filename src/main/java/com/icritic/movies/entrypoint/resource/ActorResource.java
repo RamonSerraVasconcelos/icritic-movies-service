@@ -3,6 +3,7 @@ package com.icritic.movies.entrypoint.resource;
 import com.icritic.movies.core.model.Actor;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.actor.CreateActorUseCase;
+import com.icritic.movies.core.usecase.actor.FindActorByIdUseCase;
 import com.icritic.movies.core.usecase.actor.FindAllActorsUseCase;
 import com.icritic.movies.core.usecase.actor.UpdateActorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
@@ -43,6 +44,8 @@ public class ActorResource {
 
     private final FindAllActorsUseCase findAllActorsUseCase;
 
+    private final FindActorByIdUseCase findActorByIdUseCase;
+
     @PostMapping
     public ResponseEntity<ActorResponseDto> createActor(HttpServletRequest request, @RequestBody ActorRequestDto actorRequestDto) {
         validateUserRole(request, List.of(Role.MODERATOR));
@@ -80,6 +83,15 @@ public class ActorResource {
         List<Actor> actors = findAllActorsUseCase.execute();
 
         List<ActorResponseDto> response = actors.stream().map(ActorDtoMapper.INSTANCE::actorToActorResponseDto).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ActorResponseDto> findActorById(@PathVariable Long id) {
+        Actor actor = findActorByIdUseCase.execute(id);
+
+        ActorResponseDto response = ActorDtoMapper.INSTANCE.actorToActorResponseDto(actor);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
