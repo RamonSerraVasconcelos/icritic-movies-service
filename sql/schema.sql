@@ -1,14 +1,25 @@
-CREATE TABLE categories (
-    id BIGSERIAL NOT NULL,
-    name VARCHAR(75),
+CREATE TABLE categories
+(
+    id          BIGSERIAL NOT NULL,
+    name        VARCHAR(75),
     description VARCHAR(255),
     PRIMARY KEY (id)
 );
 
-CREATE TABLE directors (
-    id BIGSERIAL NOT NULL,
-    name VARCHAR(75),
+CREATE TABLE directors
+(
+    id          BIGSERIAL NOT NULL,
+    name        VARCHAR(75),
     description VARCHAR(255),
-    country_id BIGSERIAL,
+    country_id  BIGSERIAL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE actors
+(
+    id          BIGSERIAL NOT NULL,
+    name        VARCHAR(75),
+    description VARCHAR(255),
+    country_id  BIGSERIAL,
     PRIMARY KEY (id)
 );

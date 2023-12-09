@@ -1,7 +1,7 @@
-package com.icritic.movies.core.usecase.director;
+package com.icritic.movies.core.usecase.actor;
 
+import com.icritic.movies.core.model.Actor;
 import com.icritic.movies.core.model.Country;
-import com.icritic.movies.core.model.Director;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -9,27 +9,27 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CreateDirectorUseCase {
+public class CreateActorUseCase {
 
-    private final SaveDirectorBoundary saveDirectorBoundary;
+    private final SaveActorBoundary saveActorBoundary;
 
-    public Director execute(String name, String description, Long countryId) {
+    public Actor execute(String name, String description, Long countryId) {
         try {
-            log.info("Creating director with name: [{}]", name);
+            log.info("Creating Actor with name: {}, description: {}, countryId: {}", name, description, countryId);
 
             Country country = Country.builder()
                     .id(countryId)
                     .build();
 
-            Director director = Director.builder()
+            Actor actor = Actor.builder()
                     .name(name)
                     .description(description)
                     .country(country)
                     .build();
 
-            return saveDirectorBoundary.execute(director);
+            return saveActorBoundary.execute(actor);
         } catch (Exception e) {
-            log.error("Error creating director", e);
+            log.error("Error creating actor", e);
             throw e;
         }
     }

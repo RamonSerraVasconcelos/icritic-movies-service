@@ -1,8 +1,6 @@
 package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
-import com.icritic.movies.core.usecase.boundary.director.FindDirectorByIdBoundary;
-import com.icritic.movies.core.usecase.boundary.director.SaveDirectorBoundary;
 import com.icritic.movies.core.usecase.fixture.DirectorFixture;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;

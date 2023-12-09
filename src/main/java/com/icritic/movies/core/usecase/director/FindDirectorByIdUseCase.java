@@ -1,7 +1,6 @@
 package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
-import com.icritic.movies.core.usecase.boundary.director.FindDirectorByIdBoundary;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

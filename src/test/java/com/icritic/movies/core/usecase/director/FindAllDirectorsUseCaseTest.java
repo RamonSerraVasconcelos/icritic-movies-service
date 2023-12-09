@@ -1,7 +1,6 @@
 package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
-import com.icritic.movies.core.usecase.boundary.director.FindAllDirectorsBoundary;
 import com.icritic.movies.core.usecase.fixture.DirectorFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

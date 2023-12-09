@@ -1,4 +1,4 @@
-package com.icritic.movies.core.usecase.boundary.director;
+package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
 
