@@ -1,6 +1,5 @@
-package com.icritic.movies.entrypoint.dto.actor;
+package com.icritic.movies.entrypoint.dto;
 
-import com.icritic.movies.entrypoint.dto.CountryResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ActorResponseDto {
+public class CountryResponseDto {
 
     private Long id;
     private String name;
-    private String description;
-    private CountryResponseDto country;
 }

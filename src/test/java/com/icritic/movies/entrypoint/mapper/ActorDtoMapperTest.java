@@ -19,6 +19,7 @@ class ActorDtoMapperTest {
         assertThat(actorResponseDto.getId()).isEqualTo(actor.getId());
         assertThat(actorResponseDto.getName()).isEqualTo(actor.getName());
         assertThat(actorResponseDto.getDescription()).isEqualTo(actor.getDescription());
-        assertThat(actorResponseDto.getCountryId()).isEqualTo(actor.getCountry().getId());
+        assertThat(actorResponseDto.getCountry().getId()).isEqualTo(actor.getCountry().getId());
+        assertThat(actorResponseDto.getCountry().getName()).isEqualTo(actor.getCountry().getName());
     }
 }

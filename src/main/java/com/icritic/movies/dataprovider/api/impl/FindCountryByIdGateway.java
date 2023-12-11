@@ -22,6 +22,8 @@ public class FindCountryByIdGateway implements FindCountryByIdBoundary {
 
     public Optional<Country> execute(Long id) {
         try {
+            log.info("Finding country with id: [{}]", id);
+
             WebClient webClient = WebClient.builder()
                     .baseUrl(usersServiceAddress)
                     .build();
