@@ -1,4 +1,4 @@
-package com.icritic.movies.core.model;
+package com.icritic.movies.dataprovider.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Country {
+public class CountryEntityResponse {
 
     private Long id;
     private String name;

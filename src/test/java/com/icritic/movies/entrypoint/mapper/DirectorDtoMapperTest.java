@@ -19,6 +19,8 @@ class DirectorDtoMapperTest {
         assertThat(directorResponseDto).isNotNull();
         assertEquals(director.getId(), directorResponseDto.getId());
         assertEquals(director.getName(), directorResponseDto.getName());
-        assertEquals(director.getCountry().getId(), directorResponseDto.getCountryId());
+        assertEquals(director.getDescription(), directorResponseDto.getDescription());
+        assertEquals(director.getCountry().getId(), directorResponseDto.getCountry().getId());
+        assertEquals(director.getCountry().getName(), directorResponseDto.getCountry().getName());
     }
 }

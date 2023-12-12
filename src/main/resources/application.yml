@@ -12,3 +12,7 @@ server:
   port: 8083
   error:
     include-stacktrace: never
+application:
+  properties:
+    services:
+      icritic-users-service-address: ${ICRITIC_USERS_SERVICE_ADDRESS:http://localhost:8081}
