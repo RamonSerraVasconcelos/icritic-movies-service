@@ -1,6 +1,8 @@
 package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
+import com.icritic.movies.core.usecase.country.FindCountryByIdBoundary;
+import com.icritic.movies.core.usecase.fixture.CountryFixture;
 import com.icritic.movies.core.usecase.fixture.DirectorFixture;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -24,11 +26,15 @@ class FindDirectorByIdUseCaseTest {
     @Mock
     private FindDirectorByIdBoundary findDirectorByIdBoundary;
 
+    @Mock
+    private FindCountryByIdBoundary findCountryByIdBoundary;
+
     @Test
     void givenValidParameter_thenFind_andReturnDirector() {
         Director director = DirectorFixture.load();
 
         when(findDirectorByIdBoundary.execute(director.getId())).thenReturn(Optional.of(director));
+        when(findCountryByIdBoundary.execute(director.getCountry().getId())).thenReturn(Optional.of(CountryFixture.load()));
 
         Director resultDirector = findDirectorByIdUseCase.execute(director.getId());
 
