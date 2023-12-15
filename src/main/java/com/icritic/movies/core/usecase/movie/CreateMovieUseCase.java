@@ -37,6 +37,8 @@ public class CreateMovieUseCase {
 
     public Movie execute(MovieRequestParams movieRequestParams) {
         try {
+            log.info("Creating movie with name: [{}]", movieRequestParams.getName());
+
             List<Category> categories = new ArrayList<>();
             List<Director> directors = new ArrayList<>();
             List<Actor> actors = new ArrayList<>();
