@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,7 @@ public class CreateMovieUseCase {
                     .country(country)
                     .releaseDate(movieRequestParams.getReleaseDate())
                     .rating(0L)
+                    .createdAt(LocalDateTime.now())
                     .build();
 
             Movie savedMovie = saveMovieBoundary.execute(movie);

@@ -25,4 +25,6 @@ public class Movie {
     private Country country;
     private Long rating;
     private LocalDateTime releaseDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
