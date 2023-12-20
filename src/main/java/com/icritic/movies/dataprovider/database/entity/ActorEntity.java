@@ -33,6 +33,6 @@ public class ActorEntity {
 
     private Long countryId;
 
-    @ManyToMany(mappedBy = "movies")
+    @ManyToMany(mappedBy = "actors")
     private List<MovieEntity> movies;
 }

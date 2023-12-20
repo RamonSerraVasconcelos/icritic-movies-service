@@ -31,27 +31,27 @@ CREATE TABLE movies
     synopsis    VARCHAR(500),
     country_id  INT8,
     rating      INT8,
-    release_date TIMESTAMP,
+    release_date DATE,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE movie_directors
+CREATE TABLE movies_directors
 (
     movie_id    BIGSERIAL NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
     director_id BIGSERIAL NOT NULL REFERENCES directors(id) ON DELETE CASCADE,
     CONSTRAINT movies_directors_pk PRIMARY KEY (movie_id, director_id)
 );
 
-CREATE TABLE movie_categories
+CREATE TABLE movies_categories
 (
     movie_id    BIGSERIAL NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
     category_id BIGSERIAL NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     CONSTRAINT movies_categories_pk PRIMARY KEY (movie_id, category_id)
 );
 
-CREATE TABLE movie_actors
+CREATE TABLE movies_actors
 (
     movie_id BIGSERIAL NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
     actor_id BIGSERIAL NOT NULL REFERENCES actors(id) ON DELETE CASCADE,

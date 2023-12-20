@@ -31,6 +31,6 @@ public class CategoryEntity {
 
     private String description;
 
-    @ManyToMany(mappedBy = "movies")
+    @ManyToMany(mappedBy = "actors")
     private List<MovieEntity> movies;
 }

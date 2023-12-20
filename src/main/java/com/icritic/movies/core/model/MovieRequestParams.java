@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -22,5 +22,5 @@ public class MovieRequestParams {
     private List<Long> directors;
     private List<Long> actors;
     private Long countryId;
-    private LocalDateTime releaseDate;
+    private LocalDate releaseDate;
 }

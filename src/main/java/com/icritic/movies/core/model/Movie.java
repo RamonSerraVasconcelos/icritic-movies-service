@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Movie {
     private List<Actor> actors;
     private Country country;
     private Long rating;
-    private LocalDateTime releaseDate;
+    private LocalDate releaseDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
