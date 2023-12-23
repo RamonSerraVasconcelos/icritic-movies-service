@@ -16,16 +16,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 @SuppressWarnings("DuplicatedCode")
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CreateMovieUseCase {
+public class UpdateMovieUseCase {
+
+    private final FindMovieByIdBoundary findMovieByIdUseCase;
 
     private final FindCategoryByIdBoundary findCategoryByIdBoundary;
 
@@ -37,9 +37,17 @@ public class CreateMovieUseCase {
 
     private final SaveMovieBoundary saveMovieBoundary;
 
-    public Movie execute(MovieRequestParams movieRequestParams) {
+    public Movie execute(Long id, MovieRequestParams movieRequestParams) {
         try {
-            log.info("Creating movie with name: [{}]", movieRequestParams.getName());
+            log.info("Updating movie with id: [{}]", id);
+
+            Optional<Movie> optionalMovie = findMovieByIdUseCase.execute(id);
+
+            if (optionalMovie.isEmpty()) {
+                throw new ResourceNotFoundException("Movie not found");
+            }
+
+            Movie movie = optionalMovie.get();
 
             List<Category> categories = ProcessMovieEntitiesUtil.process(movieRequestParams.getCategories(), findCategoryByIdBoundary::execute, "Category");
             List<Director> directors = ProcessMovieEntitiesUtil.process(movieRequestParams.getDirectors(), findDirectorByIdBoundary::execute, "Director");
@@ -51,27 +59,17 @@ public class CreateMovieUseCase {
                 throw new ResourceNotFoundException("Country not found");
             }
 
-            Country country = optionalCountry.get();
+            movie.setName(movieRequestParams.getName());
+            movie.setSynopsis(movieRequestParams.getSynopsis());
+            movie.setCategories(categories);
+            movie.setDirectors(directors);
+            movie.setActors(actors);
+            movie.setCountry(optionalCountry.get());
+            movie.setReleaseDate(movieRequestParams.getReleaseDate());
 
-            Movie movie = Movie.builder()
-                    .name(movieRequestParams.getName())
-                    .synopsis(movieRequestParams.getSynopsis())
-                    .categories(categories)
-                    .directors(directors)
-                    .actors(actors)
-                    .country(country)
-                    .releaseDate(movieRequestParams.getReleaseDate())
-                    .rating(0L)
-                    .createdAt(LocalDateTime.now())
-                    .build();
-
-            Movie savedMovie = saveMovieBoundary.execute(movie);
-
-            savedMovie.setCountry(country);
-
-            return savedMovie;
+            return saveMovieBoundary.execute(movie);
         } catch (Exception e) {
-            log.error("Error creating movie", e);
+            log.error("Error updating movie with id: [{}]", id, e);
             throw e;
         }
     }

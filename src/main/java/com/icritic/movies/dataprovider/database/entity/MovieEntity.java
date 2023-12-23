@@ -37,7 +37,7 @@ public class MovieEntity {
     private String name;
     private String synopsis;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REMOVE})
     @JoinTable(
             name = "movies_categories",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -45,7 +45,7 @@ public class MovieEntity {
     )
     private List<CategoryEntity> categories;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REMOVE})
     @JoinTable(
             name = "movies_directors",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -53,7 +53,7 @@ public class MovieEntity {
     )
     private List<DirectorEntity> directors;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.REMOVE})
     @JoinTable(
             name = "movies_actors",
             joinColumns = @JoinColumn(name = "movie_id"),
