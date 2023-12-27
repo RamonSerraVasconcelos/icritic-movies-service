@@ -6,6 +6,7 @@ public class CategoryFixture {
 
     public static Category load() {
         return Category.builder()
+                .id(1L)
                 .name("name")
                 .description("description")
                 .build();
