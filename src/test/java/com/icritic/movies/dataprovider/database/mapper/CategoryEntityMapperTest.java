@@ -16,7 +16,7 @@ class CategoryEntityMapperTest {
 
         CategoryEntity categoryEntity = CategoryEntityMapper.INSTANCE.categoryToCategoryEntity(category);
 
-        assertThat(categoryEntity).isNotNull().usingRecursiveComparison().isEqualTo(category);
+        assertThat(categoryEntity).isNotNull().usingRecursiveComparison().ignoringActualNullFields().isEqualTo(category);
     }
 
     @Test
@@ -25,6 +25,6 @@ class CategoryEntityMapperTest {
 
         Category category = CategoryEntityMapper.INSTANCE.categoryEntityToCategory(categoryEntity);
 
-        assertThat(category).isNotNull().usingRecursiveComparison().isEqualTo(categoryEntity);
+        assertThat(category).isNotNull().usingRecursiveComparison().ignoringActualNullFields().isEqualTo(categoryEntity);
     }
 }

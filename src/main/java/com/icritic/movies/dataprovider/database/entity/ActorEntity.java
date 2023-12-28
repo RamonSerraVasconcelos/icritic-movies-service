@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "actors")
@@ -30,4 +32,7 @@ public class ActorEntity {
     private String description;
 
     private Long countryId;
+
+    @ManyToMany(mappedBy = "actors")
+    private List<MovieEntity> movies;
 }
