@@ -29,11 +29,11 @@ class FindAllMoviesGatewayTest {
     void givenExecution_thenReturnAllMovies() {
         List<MovieEntity> moviesEntities = List.of(MovieEntityFixture.load(), MovieEntityFixture.load());
 
-        when(movieEntityRepository.findAllByOrderByIdAsc()).thenReturn(moviesEntities);
+        when(movieEntityRepository.findAllByActiveOrderByIdAsc(true)).thenReturn(moviesEntities);
 
         List<Movie> movies = findAllMoviesGateway.execute();
 
-        verify(movieEntityRepository).findAllByOrderByIdAsc();
+        verify(movieEntityRepository).findAllByActiveOrderByIdAsc(true);
 
         assertThat(movies).isNotNull().isNotEmpty().hasSize(2);
         assertThat(movies.get(0).getName()).isEqualTo(moviesEntities.get(0).getName());

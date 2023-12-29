@@ -32,6 +32,7 @@ CREATE TABLE movies
     country_id  INT8,
     rating      INT8,
     release_date DATE,
+    active      BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY (id)

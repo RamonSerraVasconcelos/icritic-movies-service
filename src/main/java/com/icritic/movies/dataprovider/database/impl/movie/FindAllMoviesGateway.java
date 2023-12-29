@@ -19,6 +19,6 @@ public class FindAllMoviesGateway implements FindAllMoviesBoundary {
     public List<Movie> execute() {
         MovieEntityMapper mapper = MovieEntityMapper.INSTANCE;
 
-        return movieEntityRepository.findAllByOrderByIdAsc().stream().map(mapper::movieEntityToMovie).collect(Collectors.toList());
+        return movieEntityRepository.findAllByActiveOrderByIdAsc(true).stream().map(mapper::movieEntityToMovie).collect(Collectors.toList());
     }
 }

@@ -61,6 +61,7 @@ public class CreateMovieUseCase {
                     .country(country)
                     .releaseDate(movieRequestParams.getReleaseDate())
                     .rating(0L)
+                    .active(true)
                     .createdAt(LocalDateTime.now())
                     .build();
 

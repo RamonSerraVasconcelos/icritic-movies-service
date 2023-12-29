@@ -4,6 +4,7 @@ import com.icritic.movies.core.model.Movie;
 import com.icritic.movies.core.model.MovieRequestParams;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
+import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
 import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
@@ -15,6 +16,7 @@ import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +49,8 @@ public class MovieResource {
     private final FindAllMoviesUseCase findAllMoviesUseCase;
 
     private final FindMovieByIdUseCase findMovieByIdUseCase;
+
+    private final DeleteMovieUseCase deleteMovieUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -104,6 +108,15 @@ public class MovieResource {
         MovieResponseDto response = MovieDtoMapper.INSTANCE.movieToMovieResponseDto(movie);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteMovie(HttpServletRequest request, @PathVariable Long id) {
+        validateUserRole(request, List.of(Role.MODERATOR));
+
+        deleteMovieUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private void validateUserRole(HttpServletRequest request, List<Role> requiredRoles) {
