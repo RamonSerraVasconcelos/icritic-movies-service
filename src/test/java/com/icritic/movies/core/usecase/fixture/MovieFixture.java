@@ -17,6 +17,7 @@ public class MovieFixture {
                 .country(CountryFixture.load())
                 .rating(0L)
                 .releaseDate(LocalDate.now().minusYears(1))
+                .active(true)
                 .build();
     }
 }
