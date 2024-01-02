@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface MovieEntityRepository extends JpaRepository<MovieEntity, Long> {
 
-    List<MovieEntity> findAllByOrderByIdAsc();
+    List<MovieEntity> findAllByActiveOrderByIdAsc(boolean active);
 }

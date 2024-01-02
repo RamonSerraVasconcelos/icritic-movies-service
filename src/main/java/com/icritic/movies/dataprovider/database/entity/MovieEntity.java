@@ -63,6 +63,7 @@ public class MovieEntity {
 
     private Long countryId;
     private Long rating;
+    private boolean active;
     private LocalDate releaseDate;
 
     @CreationTimestamp

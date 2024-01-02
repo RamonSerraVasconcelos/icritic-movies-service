@@ -34,6 +34,10 @@ public class FindMovieByIdUseCase {
 
             Movie movie = optionalMovie.get();
 
+            if (!movie.isActive()) {
+                throw new ResourceNotFoundException("Movie not found");
+            }
+
             Optional<Country> optionalCountry = findCountryByIdBoundary.execute(movie.getCountry().getId());
 
             optionalCountry.ifPresent(movie::setCountry);

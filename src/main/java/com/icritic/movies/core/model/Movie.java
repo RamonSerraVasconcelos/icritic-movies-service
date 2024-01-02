@@ -26,6 +26,7 @@ public class Movie {
     private Country country;
     private Long rating;
     private LocalDate releaseDate;
+    private boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class UpdateMovieUseCase {
 
-    private final FindMovieByIdBoundary findMovieByIdBoundary;
+    private final FindMovieByIdUseCase findMovieByIduseCase;
 
     private final FindCategoryByIdBoundary findCategoryByIdBoundary;
 
@@ -41,13 +41,7 @@ public class UpdateMovieUseCase {
         try {
             log.info("Updating movie with id: [{}]", id);
 
-            Optional<Movie> optionalMovie = findMovieByIdBoundary.execute(id);
-
-            if (optionalMovie.isEmpty()) {
-                throw new ResourceNotFoundException("Movie not found");
-            }
-
-            Movie movie = optionalMovie.get();
+            Movie movie = findMovieByIduseCase.execute(id);
 
             List<Category> categories = ProcessMovieEntitiesUtil.process(movieRequestParams.getCategories(), findCategoryByIdBoundary::execute, "Category");
             List<Director> directors = ProcessMovieEntitiesUtil.process(movieRequestParams.getDirectors(), findDirectorByIdBoundary::execute, "Director");

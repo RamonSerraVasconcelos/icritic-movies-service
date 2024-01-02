@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +31,7 @@ class UpdateMovieUseCaseTest {
     private UpdateMovieUseCase updateMovieUseCase;
 
     @Mock
-    private FindMovieByIdBoundary findMovieByIdBoundary;
+    private FindMovieByIdUseCase findMovieByIdUseCase;
 
     @Mock
     private FindCategoryByIdBoundary findCategoryByIdBoundary;
@@ -54,7 +53,7 @@ class UpdateMovieUseCaseTest {
         MovieRequestParams movieRequestParams = MovieRequestParamsFixture.load();
         Movie movie = MovieFixture.load();
 
-        when(findMovieByIdBoundary.execute(anyLong())).thenReturn(Optional.of(movie));
+        when(findMovieByIdUseCase.execute(anyLong())).thenReturn(movie);
         when(findCategoryByIdBoundary.execute(movieRequestParams.getCategories().get(0))).thenReturn(Optional.of(movie.getCategories().get(0)));
         when(findDirectorByIdBoundary.execute(movieRequestParams.getDirectors().get(0))).thenReturn(Optional.of(movie.getDirectors().get(0)));
         when(findActorByIdBoundary.execute(movieRequestParams.getActors().get(0))).thenReturn(Optional.of(movie.getActors().get(0)));
@@ -63,7 +62,7 @@ class UpdateMovieUseCaseTest {
 
         Movie updatedMovie = updateMovieUseCase.execute(1L, movieRequestParams);
 
-        verify(findMovieByIdBoundary).execute(anyLong());
+        verify(findMovieByIdUseCase).execute(anyLong());
         verify(findCategoryByIdBoundary).execute(anyLong());
         verify(findDirectorByIdBoundary).execute(anyLong());
         verify(findActorByIdBoundary).execute(anyLong());
@@ -74,25 +73,10 @@ class UpdateMovieUseCaseTest {
     }
 
     @Test
-    void givenValidParameters_movieIsNotFound_thenThrowResourceNotFoundException() {
-        MovieRequestParams movieRequestParams = MovieRequestParamsFixture.load();
-
-        when(findMovieByIdBoundary.execute(anyLong())).thenReturn(Optional.empty());
-
-        verifyNoInteractions(findCategoryByIdBoundary);
-        verifyNoInteractions(findDirectorByIdBoundary);
-        verifyNoInteractions(findActorByIdBoundary);
-        verifyNoInteractions(findCountryByIdBoundary);
-        verifyNoInteractions(saveMovieBoundary);
-
-        assertThrows(ResourceNotFoundException.class, () -> updateMovieUseCase.execute(1L, movieRequestParams));
-    }
-
-    @Test
     void givenValidParameters_whenMovieEntitiesAreNotFound_thenThrowResourceNotFoundException() {
         MovieRequestParams movieRequestParams = MovieRequestParamsFixture.load();
 
-        when(findMovieByIdBoundary.execute(anyLong())).thenReturn(Optional.of(MovieFixture.load()));
+        when(findMovieByIdUseCase.execute(anyLong())).thenReturn(MovieFixture.load());
         when(findCategoryByIdBoundary.execute(movieRequestParams.getCategories().get(0))).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> updateMovieUseCase.execute(1L, movieRequestParams));
