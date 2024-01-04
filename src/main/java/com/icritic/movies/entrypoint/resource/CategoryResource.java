@@ -9,9 +9,12 @@ import com.icritic.movies.core.usecase.category.UpdateCategoryUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.category.CategoryRequestDto;
 import com.icritic.movies.entrypoint.dto.category.CategoryResponseDto;
+import com.icritic.movies.entrypoint.dto.category.PageableCategoryResponse;
 import com.icritic.movies.entrypoint.mapper.CategoryDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,10 +80,18 @@ public class CategoryResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDto>> findAllCategories() {
-        List<Category> categories = findAllCategoriesUseCase.execute();
+    public ResponseEntity<PageableCategoryResponse> findAllCategories(Pageable pageable) {
+        Page<Category> categories = findAllCategoriesUseCase.execute(pageable);
 
-        List<CategoryResponseDto> response = categories.stream().map(CategoryDtoMapper.INSTANCE::categoryToCategoryResponsetDto).collect(Collectors.toList());
+        List<CategoryResponseDto> categoriesResponseDto = categories.stream().map(CategoryDtoMapper.INSTANCE::categoryToCategoryResponsetDto).collect(Collectors.toList());
+
+        PageableCategoryResponse response = PageableCategoryResponse.builder()
+                .data(categoriesResponseDto)
+                .page(pageable.getPageNumber())
+                .nextPage(pageable.getPageNumber() + 1)
+                .size(pageable.getPageSize())
+                .total(categories.getTotalElements())
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
