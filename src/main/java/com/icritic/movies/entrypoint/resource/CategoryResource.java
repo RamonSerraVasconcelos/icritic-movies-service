@@ -7,6 +7,7 @@ import com.icritic.movies.core.usecase.category.FindAllCategoriesUseCase;
 import com.icritic.movies.core.usecase.category.FindCategoryByIdUseCase;
 import com.icritic.movies.core.usecase.category.UpdateCategoryUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
+import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.category.CategoryRequestDto;
 import com.icritic.movies.entrypoint.dto.category.CategoryResponseDto;
 import com.icritic.movies.entrypoint.dto.category.PageableCategoryResponse;
@@ -87,10 +88,12 @@ public class CategoryResource {
 
         PageableCategoryResponse response = PageableCategoryResponse.builder()
                 .data(categoriesResponseDto)
-                .page(pageable.getPageNumber())
-                .nextPage(pageable.getPageNumber() + 1)
-                .size(pageable.getPageSize())
-                .total(categories.getTotalElements())
+                .metadata(Metadata.builder()
+                        .page(pageable.getPageNumber())
+                        .nextPage(pageable.getPageNumber() + 1)
+                        .size(pageable.getPageSize())
+                        .total(categories.getTotalElements())
+                        .build())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

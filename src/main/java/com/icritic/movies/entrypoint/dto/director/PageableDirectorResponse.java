@@ -1,4 +1,4 @@
-package com.icritic.movies.entrypoint.dto.category;
+package com.icritic.movies.entrypoint.dto.director;
 
 import com.icritic.movies.entrypoint.dto.Metadata;
 import lombok.AllArgsConstructor;
@@ -14,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class PageableCategoryResponse {
+public class PageableDirectorResponse {
 
-    private List<CategoryResponseDto> data;
+    private List<DirectorResponseDto> data;
     private Metadata metadata;
 }

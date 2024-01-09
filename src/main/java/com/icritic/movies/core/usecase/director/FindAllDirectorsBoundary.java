@@ -1,10 +1,10 @@
 package com.icritic.movies.core.usecase.director;
 
 import com.icritic.movies.core.model.Director;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface FindAllDirectorsBoundary {
 
-    List<Director> execute();
+    Page<Director> execute(Pageable pageable);
 }

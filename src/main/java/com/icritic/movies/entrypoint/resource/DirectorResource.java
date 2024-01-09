@@ -7,11 +7,15 @@ import com.icritic.movies.core.usecase.director.FindAllDirectorsUseCase;
 import com.icritic.movies.core.usecase.director.FindDirectorByIdUseCase;
 import com.icritic.movies.core.usecase.director.UpdateDirectorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
+import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.director.DirectorRequestDto;
 import com.icritic.movies.entrypoint.dto.director.DirectorResponseDto;
+import com.icritic.movies.entrypoint.dto.director.PageableDirectorResponse;
 import com.icritic.movies.entrypoint.mapper.DirectorDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,10 +82,22 @@ public class DirectorResource {
     }
 
     @GetMapping
-    private ResponseEntity<List<DirectorResponseDto>> findAllDirectors() {
-        List<Director> directors = findAllDirectorUseCase.execute();
+    private ResponseEntity<PageableDirectorResponse> findAllDirectors(Pageable pageable) {
+        Page<Director> directors = findAllDirectorUseCase.execute(pageable);
 
-        List<DirectorResponseDto> response = directors.stream().map(DirectorDtoMapper.INSTANCE::directorToDirectorResponseDto).collect(Collectors.toList());
+        List<DirectorResponseDto> directorsResponseDto = directors.stream()
+                .map(DirectorDtoMapper.INSTANCE::directorToDirectorResponseDto)
+                .collect(Collectors.toList());
+
+        PageableDirectorResponse response = PageableDirectorResponse.builder()
+                .data(directorsResponseDto)
+                .metadata(Metadata.builder()
+                        .page(pageable.getPageNumber())
+                        .nextPage(pageable.getPageNumber() + 1)
+                        .size(pageable.getPageSize())
+                        .total(directors.getTotalElements())
+                        .build())
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
