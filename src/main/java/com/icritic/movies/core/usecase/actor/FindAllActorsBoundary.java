@@ -1,10 +1,10 @@
 package com.icritic.movies.core.usecase.actor;
 
 import com.icritic.movies.core.model.Actor;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface FindAllActorsBoundary {
 
-    List<Actor> execute();
+    Page<Actor> execute(Pageable pageable);
 }

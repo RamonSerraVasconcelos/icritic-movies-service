@@ -7,11 +7,15 @@ import com.icritic.movies.core.usecase.actor.FindActorByIdUseCase;
 import com.icritic.movies.core.usecase.actor.FindAllActorsUseCase;
 import com.icritic.movies.core.usecase.actor.UpdateActorUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
+import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.actor.ActorRequestDto;
 import com.icritic.movies.entrypoint.dto.actor.ActorResponseDto;
+import com.icritic.movies.entrypoint.dto.actor.PageableActorResponse;
 import com.icritic.movies.entrypoint.mapper.ActorDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,10 +83,20 @@ public class ActorResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActorResponseDto>> findAllActors() {
-        List<Actor> actors = findAllActorsUseCase.execute();
+    public ResponseEntity<PageableActorResponse> findAllActors(Pageable pageable) {
+        Page<Actor> actors = findAllActorsUseCase.execute(pageable);
 
-        List<ActorResponseDto> response = actors.stream().map(ActorDtoMapper.INSTANCE::actorToActorResponseDto).collect(Collectors.toList());
+        List<ActorResponseDto> actorsResponseDto = actors.stream().map(ActorDtoMapper.INSTANCE::actorToActorResponseDto).collect(Collectors.toList());
+
+        PageableActorResponse response = PageableActorResponse.builder()
+                .data(actorsResponseDto)
+                .metadata(Metadata.builder()
+                        .page(pageable.getPageNumber())
+                        .nextPage(pageable.getPageNumber() + 1)
+                        .size(pageable.getPageSize())
+                        .total(actors.getTotalElements())
+                        .build())
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

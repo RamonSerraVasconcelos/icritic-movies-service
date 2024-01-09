@@ -3,9 +3,9 @@ package com.icritic.movies.core.usecase.actor;
 import com.icritic.movies.core.model.Actor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -14,8 +14,8 @@ public class FindAllActorsUseCase {
 
     private final FindAllActorsBoundary findAllActorsBoundary;
 
-    public List<Actor> execute() {
+    public Page<Actor> execute(Pageable pageable) {
         log.info("Loading all actors");
-        return findAllActorsBoundary.execute();
+        return findAllActorsBoundary.execute(pageable);
     }
 }
