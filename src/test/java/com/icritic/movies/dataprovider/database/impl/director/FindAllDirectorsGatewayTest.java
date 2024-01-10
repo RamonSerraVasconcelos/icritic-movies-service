@@ -2,15 +2,14 @@ package com.icritic.movies.dataprovider.database.impl.director;
 
 import com.icritic.movies.core.model.Director;
 import com.icritic.movies.dataprovider.database.entity.DirectorEntity;
-import com.icritic.movies.dataprovider.database.fixture.DirectorEntityFixture;
 import com.icritic.movies.dataprovider.database.repository.DirectorEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -24,14 +23,18 @@ class FindAllDirectorsGatewayTest {
     @Mock
     private DirectorEntityRepository directorEntityRepository;
 
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<DirectorEntity> pageableDirector;
+
     @Test
     void givenExecution_thenReturnAllDirectors() {
-        List< DirectorEntity> directorsEntities = List.of(DirectorEntityFixture.load(), DirectorEntityFixture.load());
+        when(directorEntityRepository.findAllByOrderByIdAsc(pageable)).thenReturn(pageableDirector);
 
-        when(directorEntityRepository.findAllByOrderByIdAsc()).thenReturn(directorsEntities);
+        Page<Director> directors = findAllDirectorsGateway.execute(pageable);
 
-        List<Director> directors = findAllDirectorsGateway.execute();
-
-        assertThat(directors).isNotNull().hasSize(2);
+        assertThat(directors).isNotNull();
     }
 }

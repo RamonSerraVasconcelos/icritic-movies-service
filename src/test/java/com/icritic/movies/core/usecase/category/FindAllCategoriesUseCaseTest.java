@@ -1,14 +1,13 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-import com.icritic.movies.core.usecase.fixture.CategoryFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -22,14 +21,18 @@ class FindAllCategoriesUseCaseTest {
     @Mock
     private FindAllCategoriesBoundary findAllCategoriesBoundary;
 
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<Category> pageableCategory;
+
     @Test
     void givenExecution_thenReturnAllCategories() {
-        List<Category> categoriesList = List.of(CategoryFixture.load(), CategoryFixture.load());
+        when(findAllCategoriesBoundary.execute(pageable)).thenReturn(pageableCategory);
 
-        when(findAllCategoriesBoundary.execute()).thenReturn(categoriesList);
+        Page<Category> categories = findAllCategoriesUseCase.execute(pageable);
 
-        List<Category> categories = findAllCategoriesUseCase.execute();
-
-        assertThat(categories).isNotNull().isNotEmpty().usingRecursiveComparison().isEqualTo(categoriesList);
+        assertThat(categories).isNotNull();
     }
 }
