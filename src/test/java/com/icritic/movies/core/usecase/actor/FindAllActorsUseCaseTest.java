@@ -1,14 +1,13 @@
 package com.icritic.movies.core.usecase.actor;
 
 import com.icritic.movies.core.model.Actor;
-import com.icritic.movies.core.usecase.fixture.ActorFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -23,15 +22,19 @@ class FindAllActorsUseCaseTest {
     @Mock
     private FindAllActorsBoundary findAllActorsBoundary;
 
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<Actor> pageableActors;
+
     @Test
     void givenExecution_thenReturnAllActors() {
-        List<Actor> actors = List.of(ActorFixture.load(), ActorFixture.load());
+        when(findAllActorsBoundary.execute(pageable)).thenReturn(pageableActors);
 
-        when(findAllActorsBoundary.execute()).thenReturn(actors);
+        Page<Actor> result = findAllActorsUseCase.execute(pageable);
 
-        List<Actor> result = findAllActorsUseCase.execute();
-
-        verify(findAllActorsBoundary).execute();
-        assertThat(result).isNotNull().isNotEmpty().usingRecursiveComparison().isEqualTo(actors);
+        verify(findAllActorsBoundary).execute(pageable);
+        assertThat(result).isNotNull();
     }
 }

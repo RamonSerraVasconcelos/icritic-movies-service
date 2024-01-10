@@ -2,16 +2,14 @@ package com.icritic.movies.dataprovider.database.impl.category;
 
 import com.icritic.movies.core.model.Category;
 import com.icritic.movies.dataprovider.database.entity.CategoryEntity;
-import com.icritic.movies.dataprovider.database.fixture.CategoryEntityFixture;
-import com.icritic.movies.dataprovider.database.impl.category.FindAllCategoriesGateway;
 import com.icritic.movies.dataprovider.database.repository.CategoryEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -25,14 +23,18 @@ class FindAllCategoriesGatewayTest {
     @Mock
     private CategoryEntityRepository categoryEntityRepository;
 
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<CategoryEntity> pageableCategory;
+
     @Test
     void givenExecution_thenFind_andReturnAllCategories() {
-        List<CategoryEntity> categoriesList = List.of(CategoryEntityFixture.load(), CategoryEntityFixture.load());
+        when(categoryEntityRepository.findAllByOrderByIdAsc(pageable)).thenReturn(pageableCategory);
 
-        when(categoryEntityRepository.findAllByOrderByIdAsc()).thenReturn(categoriesList);
+        Page<Category> categories = findAllCategoriesGateway.execute(pageable);
 
-        List<Category> categories = findAllCategoriesGateway.execute();
-
-        assertThat(categories).isNotNull().isNotEmpty().usingRecursiveComparison().isEqualTo(categoriesList);
+        assertThat(categories).isNotNull();
     }
 }

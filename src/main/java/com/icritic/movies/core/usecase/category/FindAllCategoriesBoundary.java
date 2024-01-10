@@ -1,10 +1,10 @@
 package com.icritic.movies.core.usecase.category;
 
 import com.icritic.movies.core.model.Category;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface FindAllCategoriesBoundary {
 
-    List<Category> execute();
+    Page<Category> execute(Pageable pageable);
 }

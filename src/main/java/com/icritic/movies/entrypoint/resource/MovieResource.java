@@ -9,11 +9,15 @@ import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
+import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.movie.MovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.MovieResponseDto;
+import com.icritic.movies.entrypoint.dto.movie.PageableMovieResponse;
 import com.icritic.movies.entrypoint.mapper.MovieDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -93,10 +97,23 @@ public class MovieResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieResponseDto>> findAllMovies() {
-        List<Movie> movies = findAllMoviesUseCase.execute();
+    public ResponseEntity<PageableMovieResponse> findAllMovies(Pageable pageable) {
+        Page<Movie> moviesPageables = findAllMoviesUseCase.execute(pageable);
 
-        List<MovieResponseDto> response = movies.stream().map(MovieDtoMapper.INSTANCE::movieToMovieResponseDto).collect(Collectors.toList());
+        List<MovieResponseDto> moviesResponseDto = moviesPageables.getContent()
+                .stream()
+                .map(MovieDtoMapper.INSTANCE::movieToMovieResponseDto)
+                .collect(Collectors.toList());
+
+        PageableMovieResponse response = PageableMovieResponse.builder()
+                .data(moviesResponseDto)
+                .metadata(Metadata.builder()
+                        .page(pageable.getPageNumber())
+                        .nextPage(pageable.getPageNumber() + 1)
+                        .size(pageable.getPageSize())
+                        .total(moviesPageables.getTotalElements())
+                        .build())
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
