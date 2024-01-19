@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -14,8 +16,22 @@ public class FindAllCategoriesUseCase {
 
     private final FindAllCategoriesBoundary findAllCategoriesBoundary;
 
+    private final FindAllCategoriesCachedBoundary findAllCategoriesCachedBoundary;
+
+    private final SaveCategoriesToCacheBoundary saveCategoriesToCacheBoundary;
+
     public Page<Category> execute(Pageable pageable) {
         log.info("Finding all categories");
-        return findAllCategoriesBoundary.execute(pageable);
+
+        Page<Category> cachedCategories = findAllCategoriesCachedBoundary.execute(pageable);
+
+        if (nonNull(cachedCategories)) {
+            return cachedCategories;
+        }
+
+        Page<Category> categories = findAllCategoriesBoundary.execute(pageable);
+        saveCategoriesToCacheBoundary.execute(categories);
+
+        return categories;
     }
 }
