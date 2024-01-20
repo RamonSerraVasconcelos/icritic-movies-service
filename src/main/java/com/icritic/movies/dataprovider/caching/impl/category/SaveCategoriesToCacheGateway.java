@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -19,7 +21,7 @@ public class SaveCategoriesToCacheGateway implements SaveCategoriesToCacheBounda
 
     private final ObjectMapper objectMapper;
 
-    public void execute(Page <Category> categories) {
+    public void execute(Page<Category> categories) {
         String cacheKey = CachingUtils.buildPaginationCachekey("categories", categories.getNumber(), categories.getSize());
 
         log.info("Saving categories to redis cache with cacheKey: [{}]", cacheKey);
@@ -28,6 +30,7 @@ public class SaveCategoriesToCacheGateway implements SaveCategoriesToCacheBounda
             String jsonList = objectMapper.writeValueAsString(categories.getContent());
 
             redisTemplate.opsForValue().set(cacheKey, jsonList);
+            redisTemplate.expire(cacheKey, 1, TimeUnit.HOURS);
         } catch (Exception e) {
             log.error("Error when saving categories list to redis cache with cacheKey: [{}]", cacheKey, e);
         }
