@@ -31,7 +31,7 @@ public class FindAllMoviesUseCase {
             }
 
             Page<Movie> movies = findAllMoviesBoundary.execute(pageable);
-            saveMoviesToCacheBoundary.execute(findAllMoviesBoundary.execute(pageable));
+            saveMoviesToCacheBoundary.execute(movies);
 
             return movies;
         } catch (Exception e) {
