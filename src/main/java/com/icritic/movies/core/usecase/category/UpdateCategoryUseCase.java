@@ -20,6 +20,8 @@ public class UpdateCategoryUseCase {
 
     private final SaveCategoryBoundary saveCategoryBoundary;
 
+    private final InvalidateCategoryCacheBoundary invalidateCategoryCacheBoundary;
+
     public Category execute(Long id, String name, String description) {
         try {
             log.info("Updating category with id: [{}]", id);
@@ -40,7 +42,11 @@ public class UpdateCategoryUseCase {
             categoryToUpdate.setName(name);
             categoryToUpdate.setDescription(description);
 
-            return saveCategoryBoundary.execute(categoryToUpdate);
+            Category updatedCategory = saveCategoryBoundary.execute(categoryToUpdate);
+
+            invalidateCategoryCacheBoundary.execute();
+
+            return updatedCategory;
         } catch (Exception e) {
             log.error("Error updating category with id: [{}]", id, e);
             throw e;

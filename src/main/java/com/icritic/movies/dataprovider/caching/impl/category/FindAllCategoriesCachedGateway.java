@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import static java.util.Objects.isNull;
 @Slf4j
 public class FindAllCategoriesCachedGateway implements FindAllCategoriesCachedBoundary {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final Jedis jedis;
 
     private final ObjectMapper objectMapper;
 
@@ -32,7 +32,7 @@ public class FindAllCategoriesCachedGateway implements FindAllCategoriesCachedBo
         log.info("Fetching categories from redis cache with cacheKey: [{{}]", cacheKey);
 
         try {
-            String categoriesJson = (String) redisTemplate.opsForValue().get(cacheKey);
+            String categoriesJson = jedis.get(cacheKey);
 
             if (isNull(categoriesJson) || categoriesJson.isBlank()) {
                 return null;

@@ -17,6 +17,8 @@ public class CreateCategoryUseCase {
 
     private final SaveCategoryBoundary saveCategoryBoundary;
 
+    private final InvalidateCategoryCacheBoundary invalidateCategoryCacheBoundary;
+
     public Category execute(String name, String description) {
         try {
             log.info("Creating category {}", name);
@@ -32,7 +34,11 @@ public class CreateCategoryUseCase {
                     .description(description)
                     .build();
 
-            return saveCategoryBoundary.execute(categoryToSave);
+            Category savedCategory = saveCategoryBoundary.execute(categoryToSave);
+
+            invalidateCategoryCacheBoundary.execute();
+
+            return savedCategory;
         } catch (Exception e) {
             log.error("Error creating category: [{}]", name, e);
             throw e;
