@@ -13,6 +13,8 @@ public class CreateDirectorUseCase {
 
     private final SaveDirectorBoundary saveDirectorBoundary;
 
+    private final InvalidateDirectorsCacheBoundary invalidateDirectorsCacheBoundary;
+
     public Director execute(String name, String description, Long countryId) {
         try {
             log.info("Creating director with name: [{}]", name);
@@ -27,7 +29,11 @@ public class CreateDirectorUseCase {
                     .country(country)
                     .build();
 
-            return saveDirectorBoundary.execute(director);
+            Director savedDirector = saveDirectorBoundary.execute(director);
+
+            invalidateDirectorsCacheBoundary.execute();
+
+            return savedDirector;
         } catch (Exception e) {
             log.error("Error creating director", e);
             throw e;

@@ -17,6 +17,8 @@ public class UpdateDirectorUseCase {
 
     private final SaveDirectorBoundary saveDirectorBoundary;
 
+    private final InvalidateDirectorsCacheBoundary invalidateDirectorsCacheBoundary;
+
     public Director execute(Long id, String name, String description, Long countryId) {
         Optional<Director> directorOptional = findDirectorByIdBoundary.execute(id);
 
@@ -30,6 +32,10 @@ public class UpdateDirectorUseCase {
         director.setDescription(description);
         director.getCountry().setId(countryId);
 
-        return saveDirectorBoundary.execute(director);
+        Director updatedDirector = saveDirectorBoundary.execute(director);
+
+        invalidateDirectorsCacheBoundary.execute();
+
+        return updatedDirector;
     }
 }
