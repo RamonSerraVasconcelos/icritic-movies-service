@@ -13,6 +13,8 @@ public class CreateActorUseCase {
 
     private final SaveActorBoundary saveActorBoundary;
 
+    private final InvalidateActorsCacheBoundary invalidateActorsCacheBoundary;
+
     public Actor execute(String name, String description, Long countryId) {
         try {
             log.info("Creating Actor with name: {}, description: {}, countryId: {}", name, description, countryId);
@@ -27,7 +29,11 @@ public class CreateActorUseCase {
                     .country(country)
                     .build();
 
-            return saveActorBoundary.execute(actor);
+            Actor savedActor = saveActorBoundary.execute(actor);
+
+            invalidateActorsCacheBoundary.execute();
+
+            return savedActor;
         } catch (Exception e) {
             log.error("Error creating actor", e);
             throw e;

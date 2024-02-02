@@ -7,8 +7,8 @@ import com.icritic.movies.dataprovider.util.CachingUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SaveActorsToCacheGateway implements SaveActorsToCacheBoundary {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final Jedis jedis;
 
     private final ObjectMapper objectMapper;
 
@@ -29,8 +29,8 @@ public class SaveActorsToCacheGateway implements SaveActorsToCacheBoundary {
         try {
             String jsonList = objectMapper.writeValueAsString(actors.getContent());
 
-            redisTemplate.opsForValue().set(cacheKey, jsonList);
-            redisTemplate.expire(cacheKey, 15, TimeUnit.MINUTES);
+            jedis.set(cacheKey, jsonList);
+            jedis.pexpire(cacheKey, TimeUnit.MINUTES.toMillis(15));
         } catch (Exception e) {
             log.error("Error when saving actors list to redis cache with cacheKey: [{}]", cacheKey, e);
         }
