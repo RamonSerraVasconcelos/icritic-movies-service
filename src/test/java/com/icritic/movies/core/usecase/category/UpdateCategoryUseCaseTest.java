@@ -12,9 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
@@ -32,6 +34,9 @@ class UpdateCategoryUseCaseTest {
     @Mock
     private SaveCategoryBoundary saveCategoryBoundary;
 
+    @Mock
+    private InvalidateCategoriesCacheBoundary invalidateCategoriesCacheBoundary;
+
     @Test
     void givenValidParameters_whenCategoryIsFound_thenUpdateCategory() {
         Category category = CategoryFixture.load();
@@ -45,6 +50,7 @@ class UpdateCategoryUseCaseTest {
         verify(findCategoryByIdBoundary).execute(2L);
         verify(findCategoryByNameBoundary).execute(category.getName());
         verify(saveCategoryBoundary).execute(any(Category.class));
+        verify(invalidateCategoriesCacheBoundary).execute();
 
         assertNotNull(updatedCategory);
     }
@@ -54,6 +60,11 @@ class UpdateCategoryUseCaseTest {
         when(findCategoryByIdBoundary.execute(2L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> updateCategoryUseCase.execute(2L, "name", "description"));
+
+        verify(findCategoryByIdBoundary).execute(2L);
+        verifyNoInteractions(findCategoryByNameBoundary);
+        verifyNoInteractions(saveCategoryBoundary);
+        verifyNoInteractions(invalidateCategoriesCacheBoundary);
     }
 
     @Test
@@ -64,5 +75,10 @@ class UpdateCategoryUseCaseTest {
         when(findCategoryByNameBoundary.execute(category.getName())).thenReturn(Optional.of(category));
 
         assertThrows(ResourceConflictException.class, () -> updateCategoryUseCase.execute(2L, category.getName(), category.getDescription()));
+
+        verify(findCategoryByIdBoundary).execute(2L);
+        verify(findCategoryByNameBoundary).execute(category.getName());
+        verifyNoInteractions(saveCategoryBoundary);
+        verifyNoInteractions(invalidateCategoriesCacheBoundary);
     }
 }

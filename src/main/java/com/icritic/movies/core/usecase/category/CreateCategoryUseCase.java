@@ -17,7 +17,7 @@ public class CreateCategoryUseCase {
 
     private final SaveCategoryBoundary saveCategoryBoundary;
 
-    private final InvalidateCategoryCacheBoundary invalidateCategoryCacheBoundary;
+    private final InvalidateCategoriesCacheBoundary invalidateCategoriesCacheBoundary;
 
     public Category execute(String name, String description) {
         try {
@@ -36,7 +36,7 @@ public class CreateCategoryUseCase {
 
             Category savedCategory = saveCategoryBoundary.execute(categoryToSave);
 
-            invalidateCategoryCacheBoundary.execute();
+            invalidateCategoriesCacheBoundary.execute();
 
             return savedCategory;
         } catch (Exception e) {

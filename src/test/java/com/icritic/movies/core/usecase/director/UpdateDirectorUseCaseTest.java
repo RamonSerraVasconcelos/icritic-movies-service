@@ -13,6 +13,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +29,9 @@ class UpdateDirectorUseCaseTest {
     @Mock
     private SaveDirectorBoundary saveDirectorBoundary;
 
+    @Mock
+    private InvalidateDirectorsCacheBoundary invalidateDirectorsCacheBoundary;
+
     @Test
     void givenValidParameters_thenUpdate_andReturnDirector() {
         Director director = DirectorFixture.load();
@@ -36,12 +41,19 @@ class UpdateDirectorUseCaseTest {
 
         Director returnedDirector = updateDirectorUseCase.execute(director.getId(), director.getName(), director.getDescription(), director.getCountry().getId());
 
+        verify(findDirectorByIdBoundary).execute(director.getId());
+        verify(saveDirectorBoundary).execute(director);
+        verify(invalidateDirectorsCacheBoundary).execute();
+
         assertThat(returnedDirector).isNotNull().usingRecursiveComparison().isEqualTo(director);
     }
 
     @Test
     void givenValidParameters_whenDirectorNotFound_thenThrowResourceNotFoundException() {
         when(findDirectorByIdBoundary.execute(1L)).thenReturn(Optional.empty());
+
+        verifyNoInteractions(saveDirectorBoundary);
+        verifyNoInteractions(invalidateDirectorsCacheBoundary);
 
         assertThrows(ResourceNotFoundException.class, () -> updateDirectorUseCase.execute(1L, "name", "description", 1L));
     }

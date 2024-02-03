@@ -22,6 +22,9 @@ class CreateActorUseCaseTest {
     @Mock
     private SaveActorBoundary saveActorBoundary;
 
+    @Mock
+    private InvalidateActorsCacheBoundary invalidateActorsCacheBoundary;
+
     @Test
     void givenValidParameters_thenCreate_andReturnActor() {
         Actor actor = ActorFixture.load();
@@ -31,6 +34,8 @@ class CreateActorUseCaseTest {
         Actor result = createActorUseCase.execute(actor.getName(), actor.getDescription(), actor.getCountry().getId());
 
         verify(saveActorBoundary).execute(any(Actor.class));
+        verify(invalidateActorsCacheBoundary).execute();
+
         assertThat(result).isNotNull().usingRecursiveComparison().isEqualTo(actor);
     }
 }

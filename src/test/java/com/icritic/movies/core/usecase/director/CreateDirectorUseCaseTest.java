@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,6 +22,9 @@ class CreateDirectorUseCaseTest {
     @Mock
     private SaveDirectorBoundary saveDirectorBoundary;
 
+    @Mock
+    private InvalidateDirectorsCacheBoundary invalidateDirectorsCacheBoundary;
+
     @Test
     void givenValidParameters_thenCreate_andReturnDirector() {
         Director director = DirectorFixture.load();
@@ -28,6 +32,9 @@ class CreateDirectorUseCaseTest {
         when(saveDirectorBoundary.execute(any(Director.class))).thenReturn(director);
 
         Director returnedDirector = createDirectorUseCase.execute(director.getName(), director.getDescription(), director.getCountry().getId());
+
+        verify(saveDirectorBoundary).execute(any(Director.class));
+        verify(invalidateDirectorsCacheBoundary).execute();
 
         assertThat(returnedDirector).isNotNull().usingRecursiveComparison().isEqualTo(director);
     }

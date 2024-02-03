@@ -30,6 +30,9 @@ class CreateCategoryUseCaseTest {
     @Mock
     private SaveCategoryBoundary saveCategoryBoundary;
 
+    @Mock
+    private InvalidateCategoriesCacheBoundary invalidateCategoriesCacheBoundary;
+
     @Test
     void givenValidParameters_thenCreate_andReturnCategor() {
         Category category = CategoryFixture.load();
@@ -41,6 +44,7 @@ class CreateCategoryUseCaseTest {
 
         verify(findCategoryByNameBoundary).execute(anyString());
         verify(saveCategoryBoundary).execute(any(Category.class));
+        verify(invalidateCategoriesCacheBoundary).execute();
 
         assertNotNull(savedCategory);
         assertEquals("name", savedCategory.getName());
@@ -56,5 +60,6 @@ class CreateCategoryUseCaseTest {
 
         verify(findCategoryByNameBoundary).execute(anyString());
         verifyNoInteractions(saveCategoryBoundary);
+        verifyNoInteractions(invalidateCategoriesCacheBoundary);
     }
 }

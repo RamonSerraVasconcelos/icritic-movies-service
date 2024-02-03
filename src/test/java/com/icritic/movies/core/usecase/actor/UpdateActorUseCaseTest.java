@@ -14,6 +14,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +29,9 @@ class UpdateActorUseCaseTest {
     @Mock
     private SaveActorBoundary saveActorBoundary;
 
+    @Mock
+    private InvalidateActorsCacheBoundary invalidateActorsCacheBoundary;
+
     @Test
     void givenValidParameters_thenUpdate_andReturnUpdatedActor() {
         Actor actor = ActorFixture.load();
@@ -38,6 +42,8 @@ class UpdateActorUseCaseTest {
         Actor updatedActor = updateActorUseCase.execute(actor.getId(), actor.getName(), actor.getDescription(), actor.getCountry().getId());
 
         verify(saveActorBoundary).execute(actor);
+        verify(invalidateActorsCacheBoundary).execute();
+
         assertThat(updatedActor).isNotNull();
     }
 
@@ -46,5 +52,8 @@ class UpdateActorUseCaseTest {
        when(findActorByIdBoundary.execute(1L)).thenReturn(Optional.empty());
 
        assertThrows(ResourceNotFoundException.class, () -> updateActorUseCase.execute(1L, "name", "description", 1L));
+
+       verify(findActorByIdBoundary).execute(1L);
+       verifyNoInteractions(saveActorBoundary);
     }
 }

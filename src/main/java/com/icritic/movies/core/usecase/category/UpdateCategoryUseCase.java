@@ -20,7 +20,7 @@ public class UpdateCategoryUseCase {
 
     private final SaveCategoryBoundary saveCategoryBoundary;
 
-    private final InvalidateCategoryCacheBoundary invalidateCategoryCacheBoundary;
+    private final InvalidateCategoriesCacheBoundary invalidateCategoriesCacheBoundary;
 
     public Category execute(Long id, String name, String description) {
         try {
@@ -44,7 +44,7 @@ public class UpdateCategoryUseCase {
 
             Category updatedCategory = saveCategoryBoundary.execute(categoryToUpdate);
 
-            invalidateCategoryCacheBoundary.execute();
+            invalidateCategoriesCacheBoundary.execute();
 
             return updatedCategory;
         } catch (Exception e) {
