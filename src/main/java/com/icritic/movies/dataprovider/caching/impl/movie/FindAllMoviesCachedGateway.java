@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import static java.util.Objects.isNull;
 @Slf4j
 public class FindAllMoviesCachedGateway implements FindAllMoviesCachedBoundary {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final Jedis jedis;
 
     private final ObjectMapper objectMapper;
 
@@ -32,7 +33,7 @@ public class FindAllMoviesCachedGateway implements FindAllMoviesCachedBoundary {
         log.info("Fetching movies from redis cache with cacheKey: [{{}]", cacheKey);
 
         try {
-            String moviesJson = (String) redisTemplate.opsForValue().get(cacheKey);
+            String moviesJson = jedis.get(cacheKey);
 
             if (isNull(moviesJson) || moviesJson.isBlank()) {
                 return null;

@@ -36,6 +36,8 @@ public class CreateMovieUseCase {
 
     private final SaveMovieBoundary saveMovieBoundary;
 
+    private final InvalidateMoviesCacheBoundary invalidateMoviesCacheBoundary;
+
     public Movie execute(MovieRequestParams movieRequestParams) {
         try {
             log.info("Creating movie with name: [{}]", movieRequestParams.getName());
@@ -68,6 +70,7 @@ public class CreateMovieUseCase {
             Movie savedMovie = saveMovieBoundary.execute(movie);
 
             savedMovie.setCountry(country);
+            invalidateMoviesCacheBoundary.execute();
 
             return savedMovie;
         } catch (Exception e) {
