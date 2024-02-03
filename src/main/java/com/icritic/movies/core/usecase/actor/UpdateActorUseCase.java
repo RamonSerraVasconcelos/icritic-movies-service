@@ -17,6 +17,8 @@ public class UpdateActorUseCase {
 
     private final SaveActorBoundary saveActorBoundary;
 
+    private final InvalidateActorsCacheBoundary invalidateActorsCacheBoundary;
+
     public Actor execute(Long id, String name, String description, Long countryId) {
         try {
             Optional<Actor> optionalActor = findActorByIdBoundary.execute(id);
@@ -31,7 +33,11 @@ public class UpdateActorUseCase {
             actor.setDescription(description);
             actor.getCountry().setId(countryId);
 
-            return saveActorBoundary.execute(actor);
+            Actor updatedActor = saveActorBoundary.execute(actor);
+
+            invalidateActorsCacheBoundary.execute();
+
+            return updatedActor;
         } catch (Exception e) {
             log.error("Error updating actor with id: [{}]", id, e);
             throw e;

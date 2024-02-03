@@ -37,6 +37,8 @@ public class UpdateMovieUseCase {
 
     private final SaveMovieBoundary saveMovieBoundary;
 
+    private final InvalidateMoviesCacheBoundary invalidateMoviesCacheBoundary;
+
     public Movie execute(Long id, MovieRequestParams movieRequestParams) {
         try {
             log.info("Updating movie with id: [{}]", id);
@@ -61,7 +63,11 @@ public class UpdateMovieUseCase {
             movie.setCountry(optionalCountry.get());
             movie.setReleaseDate(movieRequestParams.getReleaseDate());
 
-            return saveMovieBoundary.execute(movie);
+            Movie updatedMovie = saveMovieBoundary.execute(movie);
+
+            invalidateMoviesCacheBoundary.execute();
+
+            return updatedMovie;
         } catch (Exception e) {
             log.error("Error updating movie with id: [{}]", id, e);
             throw e;

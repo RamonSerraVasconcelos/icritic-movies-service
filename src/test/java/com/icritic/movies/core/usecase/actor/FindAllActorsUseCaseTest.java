@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,18 +24,41 @@ class FindAllActorsUseCaseTest {
     private FindAllActorsBoundary findAllActorsBoundary;
 
     @Mock
+    private FindAllActorsCachedBoundary findAllActorsCachedBoundary;
+
+    @Mock
+    private SaveActorsToCacheBoundary saveActorsToCacheBoundary;
+
+    @Mock
     private Pageable pageable;
 
     @Mock
     private Page<Actor> pageableActors;
 
     @Test
-    void givenExecution_thenReturnAllActors() {
+    void givenExecution_whenActorsAreNotOnCache_thenReturnAllActorsByDatabase() {
+        when(findAllActorsCachedBoundary.execute(pageable)).thenReturn(null);
         when(findAllActorsBoundary.execute(pageable)).thenReturn(pageableActors);
 
         Page<Actor> result = findAllActorsUseCase.execute(pageable);
 
+        verify(findAllActorsCachedBoundary).execute(pageable);
         verify(findAllActorsBoundary).execute(pageable);
+        verify(saveActorsToCacheBoundary).execute(pageableActors);
+
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void givenExecution_whenActorsAreOnCache_thenReturnAllActorsFromCache() {
+        when(findAllActorsCachedBoundary.execute(pageable)).thenReturn(pageableActors);
+
+        Page<Actor> result = findAllActorsUseCase.execute(pageable);
+
+        verify(findAllActorsCachedBoundary).execute(pageable);
+        verifyNoInteractions(findAllActorsBoundary);
+        verifyNoInteractions(saveActorsToCacheBoundary);
+
         assertThat(result).isNotNull();
     }
 }

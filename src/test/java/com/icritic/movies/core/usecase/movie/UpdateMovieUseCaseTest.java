@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +49,9 @@ class UpdateMovieUseCaseTest {
     @Mock
     private SaveMovieBoundary saveMovieBoundary;
 
+    @Mock
+    private InvalidateMoviesCacheBoundary invalidateMoviesCacheBoundary;
+
     @Test
     void givenValidParameters_whenMovieAndEntitiesAreFound_thenUpdate_andReturnMovie() {
         MovieRequestParams movieRequestParams = MovieRequestParamsFixture.load();
@@ -68,6 +72,7 @@ class UpdateMovieUseCaseTest {
         verify(findActorByIdBoundary).execute(anyLong());
         verify(findCountryByIdBoundary).execute(anyLong());
         verify(saveMovieBoundary).execute(any(Movie.class));
+        verify(invalidateMoviesCacheBoundary).execute();
 
         assertThat(updatedMovie).isNotNull();
     }
@@ -80,5 +85,13 @@ class UpdateMovieUseCaseTest {
         when(findCategoryByIdBoundary.execute(movieRequestParams.getCategories().get(0))).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> updateMovieUseCase.execute(1L, movieRequestParams));
+
+        verify(findMovieByIdUseCase).execute(anyLong());
+        verify(findCategoryByIdBoundary).execute(anyLong());
+        verifyNoInteractions(findDirectorByIdBoundary);
+        verifyNoInteractions(findActorByIdBoundary);
+        verifyNoInteractions(findCountryByIdBoundary);
+        verifyNoInteractions(saveMovieBoundary);
+        verifyNoInteractions(invalidateMoviesCacheBoundary);
     }
 }

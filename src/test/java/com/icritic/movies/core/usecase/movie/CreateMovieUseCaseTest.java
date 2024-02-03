@@ -50,6 +50,9 @@ class CreateMovieUseCaseTest {
     @Mock
     private SaveMovieBoundary saveMovieBoundary;
 
+    @Mock
+    private InvalidateMoviesCacheBoundary invalidateMoviesCacheBoundary;
+
     @Test
     void givenValidParams_whenMoviesEntitiesAreFound_thenCreate_andReturnMovie() {
         MovieRequestParams movieRequestParams = MovieRequestParamsFixture.load();
@@ -67,6 +70,7 @@ class CreateMovieUseCaseTest {
         verify(findActorByIdBoundary).execute(anyLong());
         verify(findCountryByIdBoundary).execute(anyLong());
         verify(saveMovieBoundary).execute(any(Movie.class));
+        verify(invalidateMoviesCacheBoundary).execute();
 
         assertThat(movie).isNotNull();
         assertThat(movie.getName()).isEqualTo(movieRequestParams.getName());
@@ -80,6 +84,13 @@ class CreateMovieUseCaseTest {
         when(findDirectorByIdBoundary.execute(movieRequestParams.getDirectors().get(0))).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> createMovieUseCase.execute(movieRequestParams));
+
+        verify(findCategoryByIdBoundary).execute(anyLong());
+        verify(findDirectorByIdBoundary).execute(anyLong());
+        verifyNoInteractions(findActorByIdBoundary);
+        verifyNoInteractions(saveMovieBoundary);
+        verifyNoInteractions(findCountryByIdBoundary);
+        verifyNoInteractions(invalidateMoviesCacheBoundary);
     }
 
     @Test
@@ -93,6 +104,10 @@ class CreateMovieUseCaseTest {
 
         assertThrows(ResourceNotFoundException.class, () -> createMovieUseCase.execute(movieRequestParams));
 
+        verify(findCategoryByIdBoundary).execute(anyLong());
+        verify(findDirectorByIdBoundary).execute(anyLong());
+        verify(findActorByIdBoundary).execute(anyLong());
         verifyNoInteractions(saveMovieBoundary);
+        verifyNoInteractions(invalidateMoviesCacheBoundary);
     }
 }
