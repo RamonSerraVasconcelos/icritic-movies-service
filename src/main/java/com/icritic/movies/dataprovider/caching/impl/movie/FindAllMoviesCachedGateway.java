@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
@@ -39,7 +38,8 @@ public class FindAllMoviesCachedGateway implements FindAllMoviesCachedBoundary {
                 return null;
             }
 
-            List<Movie> movies = objectMapper.readValue(moviesJson, new TypeReference<>() {});
+            List<Movie> movies = objectMapper.readValue(moviesJson, new TypeReference<>() {
+            });
 
             return new PageImpl<>(movies, pageable, movies.size());
         } catch (Exception e) {
