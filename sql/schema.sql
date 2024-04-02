@@ -59,6 +59,14 @@ CREATE TABLE movies_actors
     CONSTRAINT movies_actors_pk PRIMARY KEY (movie_id, actor_id)
 );
 
+CREATE TABLE movie_ratings
+(
+    movie_id BIGSERIAL NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
+    user_id  BIGSERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    rating   INT8,
+    CONSTRAINT movie_ratings_pk PRIMARY KEY (movie_id, user_id)
+);
+
 -- FUNCTION TO CREATE AND UPDATE DATES
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS

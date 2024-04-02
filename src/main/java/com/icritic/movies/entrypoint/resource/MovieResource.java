@@ -7,12 +7,14 @@ import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
 import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
+import com.icritic.movies.core.usecase.movie.RateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.movie.MovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.MovieResponseDto;
 import com.icritic.movies.entrypoint.dto.movie.PageableMovieResponse;
+import com.icritic.movies.entrypoint.dto.movie.RateMovieRequestDto;
 import com.icritic.movies.entrypoint.mapper.MovieDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,6 +58,8 @@ public class MovieResource {
     private final FindMovieByIdUseCase findMovieByIdUseCase;
 
     private final DeleteMovieUseCase deleteMovieUseCase;
+
+    private final RateMovieUseCase rateMovieUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -132,6 +137,20 @@ public class MovieResource {
         validateUserRole(request, List.of(Role.MODERATOR));
 
         deleteMovieUseCase.execute(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/{id}/rate")
+    public ResponseEntity<Void> rateMovie(HttpServletRequest request, @PathVariable Long id, @RequestBody RateMovieRequestDto rateMovieRequestDto) {
+        Set<ConstraintViolation<RateMovieRequestDto>> violations = validator.validate(rateMovieRequestDto);
+        if (!violations.isEmpty()) {
+            throw new ResourceViolationException(violations);
+        }
+
+        String userId = request.getAttribute("userId").toString();
+
+        rateMovieUseCase.execute(id, Long.parseLong(userId), rateMovieRequestDto.getRate());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
