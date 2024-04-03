@@ -33,6 +33,9 @@ class FindMovieByIdUseCaseTest {
     @Mock
     private FindCountryByIdBoundary findCountryByIdBoundary;
 
+    @Mock
+    private UpdateAverageMovieRatingUseCase updateAverageMovieRatingUseCase;
+
     @Test
     void givenValidId_whenMovieIsFound_thenReturnMovie() {
         Movie movie = MovieFixture.load();
@@ -40,6 +43,7 @@ class FindMovieByIdUseCaseTest {
 
         when(findMovieByIdBoundary.execute(movie.getId())).thenReturn(Optional.of(movie));
         when(findCountryByIdBoundary.execute(country.getId())).thenReturn(Optional.of(country));
+        when(updateAverageMovieRatingUseCase.execute(movie.getId())).thenReturn(10);
 
         Movie result = findMovieByIdUseCase.execute(movie.getId());
 
