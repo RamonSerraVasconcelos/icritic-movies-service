@@ -22,6 +22,8 @@ public class FindMovieByIdUseCase {
 
     private final FindCountryByIdBoundary findCountryByIdBoundary;
 
+    private final UpdateAverageMovieRatingUseCase updateAverageMovieRatingUseCase;
+
     public Movie execute(Long id) {
         try {
             log.info("Finding movie with id: {}", id);
@@ -44,6 +46,9 @@ public class FindMovieByIdUseCase {
 
             setDirectorsCountries(movie.getDirectors());
             setActorsCountries(movie.getActors());
+
+            int rating = updateAverageMovieRatingUseCase.execute(movie.getId());
+            movie.setRating(rating);
 
             return movie;
         } catch (Exception e) {

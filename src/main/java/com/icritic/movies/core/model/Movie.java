@@ -24,7 +24,7 @@ public class Movie {
     private List<Director> directors;
     private List<Actor> actors;
     private Country country;
-    private Long rating;
+    private int rating;
     private LocalDate releaseDate;
     private boolean active;
     private LocalDateTime createdAt;

@@ -62,7 +62,7 @@ public class MovieEntity {
     private List<ActorEntity> actors;
 
     private Long countryId;
-    private Long rating;
+    private int rating;
     private boolean active;
     private LocalDate releaseDate;
 

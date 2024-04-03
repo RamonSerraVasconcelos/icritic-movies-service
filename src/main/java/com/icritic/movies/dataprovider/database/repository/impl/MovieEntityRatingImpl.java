@@ -15,4 +15,10 @@ public class MovieEntityRatingImpl implements MovieEntityRatingRepository {
         String query = "INSERT INTO movie_ratings (movie_id, user_id, rating) VALUES (?, ?, ?) ON CONFLICT (movie_id, user_id) DO UPDATE SET rating = ?";
         jdbcTemplate.update(query, movieId, userId, rating, rating);
     }
+
+    public int getAverageRate(Long movieId) {
+        String query = "SELECT COALESCE(AVG(rating), 0) FROM movie_ratings WHERE movie_id = ?";
+
+        return jdbcTemplate.queryForObject(query, int.class, movieId);
+    }
 }

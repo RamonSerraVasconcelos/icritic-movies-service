@@ -15,7 +15,7 @@ public class MovieFixture {
                 .directors(List.of(DirectorFixture.load()))
                 .actors(List.of(ActorFixture.load()))
                 .country(CountryFixture.load())
-                .rating(0L)
+                .rating(0)
                 .releaseDate(LocalDate.now().minusYears(1))
                 .active(true)
                 .build();
