@@ -30,7 +30,7 @@ public class SaveMoviesToCacheGateway implements SaveMoviesToCacheBoundary {
             String jsonList = objectMapper.writeValueAsString(movies.getContent());
 
             jedis.set(cacheKey, jsonList);
-            jedis.pexpire(cacheKey, TimeUnit.MINUTES.toMillis(15));
+            jedis.pexpire(cacheKey, TimeUnit.MINUTES.toMillis(10));
         } catch (Exception e) {
             log.error("Error when saving movies list to redis cache with cacheKey: [{}]", cacheKey, e);
         }
