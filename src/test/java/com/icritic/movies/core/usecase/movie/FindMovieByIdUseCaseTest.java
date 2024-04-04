@@ -33,18 +33,45 @@ class FindMovieByIdUseCaseTest {
     @Mock
     private FindCountryByIdBoundary findCountryByIdBoundary;
 
+    @Mock
+    private UpdateAverageMovieRatingUseCase updateAverageMovieRatingUseCase;
+
+    @Mock
+    private FindMovieCachedBoundary findMovieCachedBoundary;
+
+    @Mock
+    private SaveMovieToCacheBoundary saveMovieToCacheBoundary;
+
     @Test
-    void givenValidId_whenMovieIsFound_thenReturnMovie() {
+    void givenValidId_whenMovieIsFoundOnCache_thenReturnMovie() {
+        Movie movie = MovieFixture.load();
+
+        when(findMovieCachedBoundary.execute(movie.getId())).thenReturn(movie);
+
+        Movie result = findMovieByIdUseCase.execute(movie.getId());
+
+        verifyNoInteractions(findMovieByIdBoundary);
+        verifyNoInteractions(findCountryByIdBoundary);
+        verifyNoInteractions(saveMovieToCacheBoundary);
+
+        assertThat(result).isNotNull().usingRecursiveComparison().isEqualTo(movie);
+    }
+
+    @Test
+    void givenValidId_whenMovieIsNotFoundOnCache_thenSearchOnDbAndReturnMovie() {
         Movie movie = MovieFixture.load();
         Country country = CountryFixture.load();
 
         when(findMovieByIdBoundary.execute(movie.getId())).thenReturn(Optional.of(movie));
         when(findCountryByIdBoundary.execute(country.getId())).thenReturn(Optional.of(country));
+        when(updateAverageMovieRatingUseCase.execute(movie.getId())).thenReturn(10);
+        when(findMovieCachedBoundary.execute(movie.getId())).thenReturn(null);
 
         Movie result = findMovieByIdUseCase.execute(movie.getId());
 
         verify(findMovieByIdBoundary).execute(movie.getId());
         verify(findCountryByIdBoundary, times(3)).execute(country.getId());
+        verify(saveMovieToCacheBoundary).execute(movie);
 
         assertThat(result).isNotNull().usingRecursiveComparison().isEqualTo(movie);
     }

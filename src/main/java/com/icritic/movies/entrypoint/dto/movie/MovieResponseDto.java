@@ -27,6 +27,6 @@ public class MovieResponseDto {
     private List<DirectorResponseDto> directors;
     private List<ActorResponseDto> actors;
     private Country country;
-    private Long rating;
+    private int rating;
     private LocalDate releaseDate;
 }

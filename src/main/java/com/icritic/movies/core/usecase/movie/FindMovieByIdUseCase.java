@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.nonNull;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -22,9 +24,21 @@ public class FindMovieByIdUseCase {
 
     private final FindCountryByIdBoundary findCountryByIdBoundary;
 
+    private final UpdateAverageMovieRatingUseCase updateAverageMovieRatingUseCase;
+
+    private final SaveMovieToCacheBoundary saveMovieToCacheBoundary;
+
+    private final FindMovieCachedBoundary findMovieCachedBoundary;
+
     public Movie execute(Long id) {
         try {
             log.info("Finding movie with id: {}", id);
+
+            Movie cachedMovie = findMovieCachedBoundary.execute(id);
+
+            if (nonNull(cachedMovie)) {
+                return cachedMovie;
+            }
 
             Optional<Movie> optionalMovie = findMovieByIdBoundary.execute(id);
 
@@ -44,6 +58,11 @@ public class FindMovieByIdUseCase {
 
             setDirectorsCountries(movie.getDirectors());
             setActorsCountries(movie.getActors());
+
+            int rating = updateAverageMovieRatingUseCase.execute(movie.getId());
+            movie.setRating(rating);
+
+            saveMovieToCacheBoundary.execute(movie);
 
             return movie;
         } catch (Exception e) {
