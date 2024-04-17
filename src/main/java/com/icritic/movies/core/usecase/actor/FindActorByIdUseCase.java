@@ -6,11 +6,11 @@ import com.icritic.movies.core.usecase.country.FindCountryByIdBoundary;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class FindActorByIdUseCase {

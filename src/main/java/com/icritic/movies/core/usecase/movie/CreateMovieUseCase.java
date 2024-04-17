@@ -14,14 +14,14 @@ import com.icritic.movies.core.usecase.movie.util.ProcessMovieEntitiesUtil;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("DuplicatedCode")
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class CreateMovieUseCase {

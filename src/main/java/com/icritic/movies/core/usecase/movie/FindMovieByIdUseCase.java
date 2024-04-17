@@ -8,14 +8,14 @@ import com.icritic.movies.core.usecase.country.FindCountryByIdBoundary;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class FindMovieByIdUseCase {

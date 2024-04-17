@@ -4,11 +4,11 @@ import com.icritic.movies.core.model.Category;
 import com.icritic.movies.exception.ResourceConflictException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class CreateCategoryUseCase {

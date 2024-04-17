@@ -4,9 +4,9 @@ import com.icritic.movies.core.model.Country;
 import com.icritic.movies.core.model.Director;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class CreateDirectorUseCase {

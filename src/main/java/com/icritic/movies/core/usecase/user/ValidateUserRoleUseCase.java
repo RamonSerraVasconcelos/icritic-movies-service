@@ -3,13 +3,13 @@ package com.icritic.movies.core.usecase.user;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.exception.ForbiddenAccessException;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
 
-@Component
+@Service
 @NoArgsConstructor
 public class ValidateUserRoleUseCase {
 
