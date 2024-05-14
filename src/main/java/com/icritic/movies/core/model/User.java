@@ -6,18 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Builder
-public class Review {
+public class User {
 
     private Long id;
-    private Movie movie;
-    private User user;
-    private String review;
-    private LocalDateTime createdAt;
+    private String name;
+    private String profilePictureUrl;
+    private boolean active;
 }

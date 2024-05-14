@@ -1,4 +1,4 @@
-package com.icritic.movies.entrypoint.dto.movie;
+package com.icritic.movies.dataprovider.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @Builder
-public class ReviewResponseDto {
+public class UserEntityResponse {
 
     private Long id;
-    private String review;
-    private String userName;
-    private String userProfilePictureUrl;
+    private String name;
+    private boolean active;
+    private String profilePictureUrl;
 }

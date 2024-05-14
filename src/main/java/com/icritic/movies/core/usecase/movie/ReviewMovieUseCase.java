@@ -2,6 +2,7 @@ package com.icritic.movies.core.usecase.movie;
 
 import com.icritic.movies.core.model.Movie;
 import com.icritic.movies.core.model.Review;
+import com.icritic.movies.core.model.User;
 import com.icritic.movies.exception.ResourceNotFoundException;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class ReviewMovieUseCase {
     private final SaveReviewBoundary saveReviewBoundary;
 
     public Review execute(Long movieId, Long userId, String review) {
+        log.info("Creating movie review for movieId: [{}], userId: [{}]", movieId, userId);
+
         try {
             Optional<Review> doesReviewExist = findReviewByMovieAndUserIdBoundary.execute(movieId, userId);
             if (doesReviewExist.isPresent()) {
@@ -36,7 +39,7 @@ public class ReviewMovieUseCase {
 
             Review reviewToSave = Review.builder()
                     .movie(movie.get())
-                    .userId(userId)
+                    .user(User.builder().id(userId).build())
                     .review(review)
                     .createdAt(LocalDateTime.now())
                     .build();

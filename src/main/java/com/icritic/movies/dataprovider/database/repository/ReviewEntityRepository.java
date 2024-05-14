@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewEntityRepository extends JpaRepository<ReviewEntity, Long> {
 
-    Page<ReviewEntity> findByMovieId(Pageable pageable, Long movieId);
+    Page<ReviewEntity> findAllByMovieIdOrderByIdDesc(Pageable pageable, Long movieId);
 
     ReviewEntity findByMovieIdAndUserId(Long movieId, Long userId);
 }

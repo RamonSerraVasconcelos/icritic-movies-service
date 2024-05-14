@@ -8,6 +8,7 @@ import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
 import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
+import com.icritic.movies.core.usecase.movie.FindReviewsUseCase;
 import com.icritic.movies.core.usecase.movie.RateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.ReviewMovieUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
@@ -16,9 +17,11 @@ import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.movie.MovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.MovieResponseDto;
 import com.icritic.movies.entrypoint.dto.movie.PageableMovieResponse;
+import com.icritic.movies.entrypoint.dto.movie.PageableReviewResponse;
 import com.icritic.movies.entrypoint.dto.movie.RateMovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.ReviewCreateResponse;
 import com.icritic.movies.entrypoint.dto.movie.ReviewRequestDto;
+import com.icritic.movies.entrypoint.dto.movie.ReviewResponseDto;
 import com.icritic.movies.entrypoint.mapper.MovieDtoMapper;
 import com.icritic.movies.entrypoint.mapper.ReviewDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
@@ -67,6 +70,8 @@ public class MovieResource {
     private final RateMovieUseCase rateMovieUseCase;
 
     private final ReviewMovieUseCase reviewMovieUseCase;
+
+    private final FindReviewsUseCase findReviewsUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -176,6 +181,28 @@ public class MovieResource {
         ReviewCreateResponse reviewResponseDto = ReviewDtoMapper.INSTANCE.reviewToReviewCreateResponse(review);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponseDto);
+    }
+
+    @GetMapping("/{movieId}/reviews")
+    public ResponseEntity<PageableReviewResponse> findReviewsByMovieId(HttpServletRequest request, @PathVariable Long movieId, Pageable pageable) {
+        Page<Review> reviews = findReviewsUseCase.execute(pageable, movieId, request.getHeader("Authorization"));
+
+        List<ReviewResponseDto> reviewResponseDtos = reviews.getContent()
+                .stream()
+                .map(ReviewDtoMapper.INSTANCE::reviewToReviewResponseDto)
+                .collect(Collectors.toList());
+
+        PageableReviewResponse response = PageableReviewResponse.builder()
+                .data(reviewResponseDtos)
+                .metadata(Metadata.builder()
+                        .page(pageable.getPageNumber())
+                        .nextPage(pageable.getPageNumber() + 1)
+                        .size(pageable.getPageSize())
+                        .total(reviews.getTotalElements())
+                        .build())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     private void validateUserRole(HttpServletRequest request, List<Role> requiredRoles) {
