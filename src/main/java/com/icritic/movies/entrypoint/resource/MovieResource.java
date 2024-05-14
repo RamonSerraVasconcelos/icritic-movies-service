@@ -3,6 +3,7 @@ package com.icritic.movies.entrypoint.resource;
 import com.icritic.movies.core.model.Movie;
 import com.icritic.movies.core.model.MovieRequestParams;
 import com.icritic.movies.core.model.Review;
+import com.icritic.movies.core.model.enums.ReviewLikeAction;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
@@ -12,6 +13,7 @@ import com.icritic.movies.core.usecase.movie.FindReviewsUseCase;
 import com.icritic.movies.core.usecase.movie.RateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.ReviewMovieUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
+import com.icritic.movies.core.usecase.movie.UpvoteReviewUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.Metadata;
 import com.icritic.movies.entrypoint.dto.movie.MovieRequestDto;
@@ -22,6 +24,7 @@ import com.icritic.movies.entrypoint.dto.movie.RateMovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.ReviewCreateResponse;
 import com.icritic.movies.entrypoint.dto.movie.ReviewRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.ReviewResponseDto;
+import com.icritic.movies.entrypoint.dto.movie.ReviewUpvoteRequestDto;
 import com.icritic.movies.entrypoint.mapper.MovieDtoMapper;
 import com.icritic.movies.entrypoint.mapper.ReviewDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
@@ -72,6 +75,8 @@ public class MovieResource {
     private final ReviewMovieUseCase reviewMovieUseCase;
 
     private final FindReviewsUseCase findReviewsUseCase;
+
+    private final UpvoteReviewUseCase upvoteReviewUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -203,6 +208,21 @@ public class MovieResource {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PatchMapping("/review/{reviewId}/upvote")
+    public ResponseEntity<Void> likeReview(HttpServletRequest request, @PathVariable Long reviewId, @RequestBody ReviewUpvoteRequestDto reviewUpvoteRequestDto) {
+        Set<ConstraintViolation<ReviewUpvoteRequestDto>> violations = validator.validate(reviewUpvoteRequestDto);
+        if (!violations.isEmpty()) {
+            throw new ResourceViolationException(violations);
+        }
+
+        Long userId = Long.parseLong(request.getAttribute("userId").toString());
+        ReviewLikeAction action = ReviewLikeAction.parseAction(reviewUpvoteRequestDto.getAction());
+
+        upvoteReviewUseCase.execute(reviewId, userId, action);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private void validateUserRole(HttpServletRequest request, List<Role> requiredRoles) {

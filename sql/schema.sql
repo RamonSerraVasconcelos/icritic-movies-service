@@ -79,9 +79,9 @@ CREATE TABLE reviews
 
 CREATE TABLE review_likes
 (
-    movie_review_id INT8 NOT NULL,
+    review_id INT8 NOT NULL,
     user_id         INT8 NOT NULL,
-    PRIMARY KEY (movie_review_id, user_id)
+    PRIMARY KEY (review_id, user_id)
 );
 
 ALTER TABLE IF EXISTS reviews ADD CONSTRAINT fk_reviews_movies_id FOREIGN KEY (movie_id) REFERENCES movies;
