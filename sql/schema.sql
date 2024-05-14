@@ -67,6 +67,27 @@ CREATE TABLE movie_ratings
     CONSTRAINT movie_ratings_pk PRIMARY KEY (movie_id, user_id)
 );
 
+CREATE TABLE reviews
+(
+    id       BIGSERIAL NOT NULL,
+    movie_id INT8 NOT NULL,
+    user_id  INT8 NOT NULL,
+    review   VARCHAR(2500),
+    created_at TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE review_likes
+(
+    movie_review_id INT8 NOT NULL,
+    user_id         INT8 NOT NULL,
+    PRIMARY KEY (movie_review_id, user_id)
+);
+
+ALTER TABLE IF EXISTS reviews ADD CONSTRAINT fk_reviews_movies_id FOREIGN KEY (movie_id) REFERENCES movies;
+
+ALTER TABLE IF EXISTS review_likes ADD CONSTRAINT fk_review_likes_reviews_id FOREIGN KEY (movie_review_id) REFERENCES reviews;
+
 -- FUNCTION TO CREATE AND UPDATE DATES
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS

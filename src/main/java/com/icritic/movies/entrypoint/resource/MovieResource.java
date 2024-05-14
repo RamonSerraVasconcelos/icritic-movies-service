@@ -2,12 +2,14 @@ package com.icritic.movies.entrypoint.resource;
 
 import com.icritic.movies.core.model.Movie;
 import com.icritic.movies.core.model.MovieRequestParams;
+import com.icritic.movies.core.model.Review;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
 import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
 import com.icritic.movies.core.usecase.movie.RateMovieUseCase;
+import com.icritic.movies.core.usecase.movie.ReviewMovieUseCase;
 import com.icritic.movies.core.usecase.movie.UpdateMovieUseCase;
 import com.icritic.movies.core.usecase.user.ValidateUserRoleUseCase;
 import com.icritic.movies.entrypoint.dto.Metadata;
@@ -15,7 +17,10 @@ import com.icritic.movies.entrypoint.dto.movie.MovieRequestDto;
 import com.icritic.movies.entrypoint.dto.movie.MovieResponseDto;
 import com.icritic.movies.entrypoint.dto.movie.PageableMovieResponse;
 import com.icritic.movies.entrypoint.dto.movie.RateMovieRequestDto;
+import com.icritic.movies.entrypoint.dto.movie.ReviewCreateResponse;
+import com.icritic.movies.entrypoint.dto.movie.ReviewRequestDto;
 import com.icritic.movies.entrypoint.mapper.MovieDtoMapper;
+import com.icritic.movies.entrypoint.mapper.ReviewDtoMapper;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,6 +65,8 @@ public class MovieResource {
     private final DeleteMovieUseCase deleteMovieUseCase;
 
     private final RateMovieUseCase rateMovieUseCase;
+
+    private final ReviewMovieUseCase reviewMovieUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -153,6 +160,22 @@ public class MovieResource {
         rateMovieUseCase.execute(id, Long.parseLong(userId), rateMovieRequestDto.getRate());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/review")
+    public ResponseEntity<ReviewCreateResponse> reviewMovie(HttpServletRequest request, @RequestBody ReviewRequestDto reviewRequestDto) {
+        Set<ConstraintViolation<ReviewRequestDto>> violations = validator.validate(reviewRequestDto);
+        if (!violations.isEmpty()) {
+            throw new ResourceViolationException(violations);
+        }
+
+        String userId = request.getAttribute("userId").toString();
+
+        Review review = reviewMovieUseCase.execute(reviewRequestDto.getMovieId(), Long.parseLong(userId), reviewRequestDto.getReview());
+
+        ReviewCreateResponse reviewResponseDto = ReviewDtoMapper.INSTANCE.reviewToReviewCreateResponse(review);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponseDto);
     }
 
     private void validateUserRole(HttpServletRequest request, List<Role> requiredRoles) {
