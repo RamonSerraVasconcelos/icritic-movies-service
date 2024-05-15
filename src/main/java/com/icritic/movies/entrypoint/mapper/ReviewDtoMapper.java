@@ -14,6 +14,7 @@ public abstract class ReviewDtoMapper {
 
     public abstract ReviewCreateResponse reviewToReviewCreateResponse(Review review);
 
+    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.name")
     @Mapping(target = "userProfilePictureUrl", source = "user.profilePictureUrl")
     public abstract ReviewResponseDto reviewToReviewResponseDto(Review review);

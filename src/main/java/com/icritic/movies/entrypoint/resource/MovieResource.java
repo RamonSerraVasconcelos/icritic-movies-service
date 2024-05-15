@@ -7,6 +7,7 @@ import com.icritic.movies.core.model.enums.ReviewLikeAction;
 import com.icritic.movies.core.model.enums.Role;
 import com.icritic.movies.core.usecase.movie.CreateMovieUseCase;
 import com.icritic.movies.core.usecase.movie.DeleteMovieUseCase;
+import com.icritic.movies.core.usecase.movie.DeleteReviewUseCase;
 import com.icritic.movies.core.usecase.movie.FindAllMoviesUseCase;
 import com.icritic.movies.core.usecase.movie.FindMovieByIdUseCase;
 import com.icritic.movies.core.usecase.movie.FindReviewsUseCase;
@@ -77,6 +78,8 @@ public class MovieResource {
     private final FindReviewsUseCase findReviewsUseCase;
 
     private final UpvoteReviewUseCase upvoteReviewUseCase;
+
+    private final DeleteReviewUseCase deleteReviewUseCase;
 
     @PostMapping
     public ResponseEntity<MovieResponseDto> createMovie(HttpServletRequest request, @RequestBody MovieRequestDto movieRequestDto) {
@@ -187,6 +190,17 @@ public class MovieResource {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponseDto);
     }
+
+    @DeleteMapping("/review/{reviewId}")
+    public ResponseEntity<Void> deleteReview(HttpServletRequest request, @PathVariable Long reviewId) {
+        Long userId = Long.parseLong(request.getAttribute("userId").toString());
+        Role userRole = Role.parseRole(request.getAttribute("role").toString());
+
+        deleteReviewUseCase.execute(reviewId, userId, userRole);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
     @GetMapping("/{movieId}/reviews")
     public ResponseEntity<PageableReviewResponse> findReviewsByMovieId(HttpServletRequest request, @PathVariable Long movieId, Pageable pageable) {

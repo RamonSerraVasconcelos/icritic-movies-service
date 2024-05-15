@@ -25,4 +25,9 @@ public class ReviewEntityLikesImpl implements ReviewEntityLikesRepository {
         String query = "DELETE FROM review_likes WHERE review_id = ? AND user_id = ?";
         jdbcTemplate.update(query, reviewId, userId);
     }
+
+    public void deleteLikesByReviewId(Long reviewId) {
+        String query = "DELETE FROM review_likes WHERE review_id = ?";
+        jdbcTemplate.update(query, reviewId);
+    }
 }

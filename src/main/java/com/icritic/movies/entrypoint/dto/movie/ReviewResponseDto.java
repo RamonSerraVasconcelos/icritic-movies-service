@@ -15,6 +15,7 @@ public class ReviewResponseDto {
 
     private Long id;
     private String review;
+    private Long userId;
     private String userName;
     private String userProfilePictureUrl;
 }
