@@ -1,15 +1,21 @@
 package com.icritic.movies.core.usecase.movie;
 
+import com.icritic.movies.core.model.Review;
 import com.icritic.movies.core.model.enums.ReviewLikeAction;
+import com.icritic.movies.exception.ResourceNotFoundException;
 import com.icritic.movies.exception.ResourceViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UpvoteReviewUseCase {
+
+    private final FindReviewByIdBoundary findReviewByIdBoundary;
 
     private final CheckUserReviewLikeCountBoundary checkUserReviewLikeCountBoundary;
 
@@ -19,6 +25,12 @@ public class UpvoteReviewUseCase {
 
     public void execute(Long reviewId, Long userId, ReviewLikeAction action) {
         log.info("Upvoting review with id: [{}] for user with id: [{}] and action: [{}]", reviewId, userId, action);
+
+        Optional<Review> review = findReviewByIdBoundary.execute(reviewId);
+        if (review.isEmpty()) {
+            log.warn("Review with id: [{}] not found", reviewId);
+            throw new ResourceNotFoundException("Review not found");
+        }
 
         switch (action) {
             case LIKE:

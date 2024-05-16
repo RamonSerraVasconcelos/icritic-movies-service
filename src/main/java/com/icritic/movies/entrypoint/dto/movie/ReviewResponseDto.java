@@ -18,4 +18,5 @@ public class ReviewResponseDto {
     private Long userId;
     private String userName;
     private String userProfilePictureUrl;
+    private int likeCount;
 }

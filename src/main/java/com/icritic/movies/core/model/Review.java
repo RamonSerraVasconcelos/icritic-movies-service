@@ -19,5 +19,6 @@ public class Review {
     private Movie movie;
     private User user;
     private String review;
+    private int likeCount;
     private LocalDateTime createdAt;
 }

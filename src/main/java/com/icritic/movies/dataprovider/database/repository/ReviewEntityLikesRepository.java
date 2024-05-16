@@ -9,4 +9,6 @@ public interface ReviewEntityLikesRepository {
     void delete(Long reviewId, Long userId);
 
     void deleteLikesByReviewId(Long reviewId);
+
+    Integer countByReviewId(Long reviewId);
 }

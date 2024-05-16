@@ -35,6 +35,6 @@ class SaveReviewGatewayTest {
 
         verify(reviewEntityRepository).save(any(ReviewEntity.class));
 
-        assertThat(review).usingRecursiveComparison().ignoringFields("user", "movie").isEqualTo(reviewEntity);
+        assertThat(review).usingRecursiveComparison().ignoringFields("user", "movie", "likeCount").isEqualTo(reviewEntity);
     }
 }

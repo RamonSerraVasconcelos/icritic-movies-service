@@ -34,6 +34,6 @@ class FindReviewByIdGatewayTest {
         Optional<Review> review = findReviewByIdGateway.execute(reviewEntity.getId());
 
         verify(reviewEntityRepository).findById(reviewEntity.getId());
-        assertThat(review).isPresent().get().usingRecursiveComparison().ignoringFields("user", "movie").isEqualTo(reviewEntity);
+        assertThat(review).isPresent().get().usingRecursiveComparison().ignoringFields("user", "movie", "likeCount").isEqualTo(reviewEntity);
     }
 }

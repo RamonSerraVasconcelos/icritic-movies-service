@@ -38,6 +38,9 @@ class FindReviewsUseCaseTest {
     private FindUserByIdBoundary findUserByIdBoundary;
 
     @Mock
+    private GetReviewLikeCountUseCase getReviewLikeCountUseCase;
+
+    @Mock
     private Pageable pageable;
 
     @Test
@@ -54,6 +57,7 @@ class FindReviewsUseCaseTest {
                 .thenReturn(Optional.of(UserFixture.load()))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(inactiveUser));
+        when(getReviewLikeCountUseCase.execute(anyLong())).thenReturn(0);
 
         Page<Review> result = findReviewsUseCase.execute(pageable, 1L, "authorizationToken");
 

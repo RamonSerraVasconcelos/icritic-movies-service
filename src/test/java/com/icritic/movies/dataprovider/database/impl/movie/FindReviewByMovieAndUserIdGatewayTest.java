@@ -34,6 +34,6 @@ class FindReviewByMovieAndUserIdGatewayTest {
         Optional<Review> review = findReviewByMovieAndUserIdGateway.execute(1L, 1L);
 
         verify(reviewEntityRepository).findByMovieIdAndUserId(1L, 1L);
-        assertThat(review).isPresent().get().usingRecursiveComparison().ignoringFields("user", "movie").isEqualTo(reviewEntity);
+        assertThat(review).isPresent().get().usingRecursiveComparison().ignoringFields("user", "movie", "likeCount").isEqualTo(reviewEntity);
     }
 }

@@ -23,6 +23,8 @@ public class FindReviewsUseCase {
 
     private final FindUserByIdBoundary findUserByIdBoundary;
 
+    private final GetReviewLikeCountUseCase getReviewLikeCountUseCase;
+
     public Page<Review> execute(Pageable pageable, Long movieId, String authorisationToken) {
         log.info("Finding reviews for movie with id: [{}]", movieId);
 
@@ -30,6 +32,8 @@ public class FindReviewsUseCase {
             Page<Review> reviews = findReviewsByMovieIdBoundary.execute(pageable, movieId);
 
             List<Review> filteredReviews = filterReviewsWithValidUsers(reviews, authorisationToken);
+
+            setReviewLikes(filteredReviews);
 
             return new PageImpl<>(filteredReviews, pageable, filteredReviews.size());
         } catch (Exception e) {
@@ -53,5 +57,13 @@ public class FindReviewsUseCase {
         });
 
         return filteredReviews;
+    }
+
+    private void setReviewLikes(List<Review> reviews) {
+        reviews.forEach(review -> {
+            int likeCount = getReviewLikeCountUseCase.execute(review.getId());
+
+            review.setLikeCount(likeCount);
+        });
     }
 }

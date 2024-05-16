@@ -30,4 +30,9 @@ public class ReviewEntityLikesImpl implements ReviewEntityLikesRepository {
         String query = "DELETE FROM review_likes WHERE review_id = ?";
         jdbcTemplate.update(query, reviewId);
     }
+
+    public Integer countByReviewId(Long reviewId) {
+        String query = "SELECT COUNT(*) FROM review_likes WHERE review_id = ?";
+        return jdbcTemplate.queryForObject(query, Integer.class, reviewId);
+    }
 }
