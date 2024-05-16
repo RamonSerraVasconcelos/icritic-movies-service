@@ -86,7 +86,7 @@ CREATE TABLE review_likes
 
 ALTER TABLE IF EXISTS reviews ADD CONSTRAINT fk_reviews_movies_id FOREIGN KEY (movie_id) REFERENCES movies;
 
-ALTER TABLE IF EXISTS review_likes ADD CONSTRAINT fk_review_likes_reviews_id FOREIGN KEY (movie_review_id) REFERENCES reviews;
+ALTER TABLE IF EXISTS review_likes ADD CONSTRAINT fk_review_likes_reviews_id FOREIGN KEY (movie_review_id) REFERENCES reviews ON DELETE CASCADE;
 
 -- FUNCTION TO CREATE AND UPDATE DATES
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
