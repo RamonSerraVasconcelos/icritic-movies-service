@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface MovieEntityRepository extends JpaRepository<MovieEntity, Long> {
-
-    Page<MovieEntity> findAllByActiveOrderByIdAsc(Pageable pageable, boolean active);
+public interface MovieEntityRepository extends JpaRepository<MovieEntity, Long>, MovieEntityCustomRepository {
 
     @Modifying
     @Transactional
