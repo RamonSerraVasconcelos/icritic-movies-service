@@ -1,6 +1,8 @@
 package com.icritic.movies.entrypoint.dto.movie;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.icritic.movies.core.model.Country;
+import com.icritic.movies.entrypoint.dto.CountryResponseDto;
 import com.icritic.movies.entrypoint.dto.actor.ActorResponseDto;
 import com.icritic.movies.entrypoint.dto.category.CategoryResponseDto;
 import com.icritic.movies.entrypoint.dto.director.DirectorResponseDto;
@@ -18,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovieResponseDto {
 
     private Long id;
@@ -26,7 +29,7 @@ public class MovieResponseDto {
     private List<CategoryResponseDto> categories;
     private List<DirectorResponseDto> directors;
     private List<ActorResponseDto> actors;
-    private Country country;
+    private CountryResponseDto country;
     private int rating;
     private LocalDate releaseDate;
 }
