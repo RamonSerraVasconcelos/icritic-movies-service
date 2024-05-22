@@ -8,4 +8,6 @@ import java.util.List;
 public interface MovieEntityCustomRepository {
 
     List<MovieEntity> findByParams(MovieFilter movieFilterParams);
+
+    Long countMovies(MovieFilter movieFilterParams);
 }

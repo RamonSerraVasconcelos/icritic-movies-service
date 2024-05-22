@@ -8,9 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -21,33 +20,51 @@ public class FindAllMoviesUseCase {
 
     private final FindAllMoviesCachedBoundary findAllMoviesCachedBoundary;
 
-    private final CountMoviesBoundary countMoviesBoundary;
+    private final CountMoviesUseCase countMoviesUseCase;
 
     private final SaveMoviesToCacheBoundary saveMoviesToCacheBoundary;
+
+    private boolean shouldCacheMovies;
 
     public Page<Movie> execute(MovieFilter movieFilter) {
         try {
             log.info("Finding all movies with params: {}", movieFilter.toString());
 
-            if (movieFilter.isCacheable()) {
-                Page<Movie> cachedMovies = findAllMoviesCachedBoundary.execute(movieFilter.getPageable());
+            List<Movie> movies = getMovies(movieFilter);
 
-                if (nonNull(cachedMovies)) {
-                    return cachedMovies;
-                }
-            }
-
-            List<Movie> movies = findAllMoviesBoundary.execute(movieFilter);
-            int totalMoviesCount = countMoviesBoundary.execute();
-
+            Long totalMoviesCount = countMoviesUseCase.execute(movieFilter);
             Page<Movie> pageableMovies = new PageImpl<>(movies, movieFilter.getPageable(), totalMoviesCount);
 
-            if (movieFilter.isCacheable()) saveMoviesToCacheBoundary.execute(pageableMovies);
+            if (movieFilter.isCacheable() && shouldCacheMovies) {
+                saveMoviesToCacheBoundary.execute(pageableMovies);
+            }
 
             return pageableMovies;
         } catch (Exception e) {
             log.error("Error finding all movies", e);
             throw e;
         }
+    }
+
+    private List<Movie> getMovies(MovieFilter movieFilter) {
+        List<Movie> movies = new ArrayList<>();
+
+        if (movieFilter.isCacheable()) {
+            movies = findAllMoviesCachedBoundary.execute(movieFilter.getPageable());
+            shouldCacheMovies = false;
+        }
+
+        if (movies.isEmpty()) {
+            log.info("Searching movies on database");
+
+            movies = findAllMoviesBoundary.execute(movieFilter);
+            shouldCacheMovies = true;
+        }
+
+        return movies;
+    }
+
+    public void setMovieCategories(List<Movie> movies) {
+
     }
 }

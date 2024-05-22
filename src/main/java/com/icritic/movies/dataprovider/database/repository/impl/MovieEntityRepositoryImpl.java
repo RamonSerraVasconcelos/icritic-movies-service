@@ -20,6 +20,7 @@ public class MovieEntityRepositoryImpl implements MovieEntityCustomRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     private static final String BASE_QUERY = "SELECT * FROM movies m";
+    private static final String BASE_COUNT_QUERY = "SELECT COUNT(id) FROM movies m";
     private static final String LEFT_JOIN_CATEGORY = " LEFT JOIN movies_categories mc ON m.id = mc.movie_id";
     private static final String LEFT_JOIN_DIRECTOR = " LEFT JOIN movies_directors md ON m.id = md.movie_id";
     private static final String LEFT_JOIN_ACTOR = " LEFT JOIN movies_actors ma ON m.id = ma.movie_id";
@@ -34,6 +35,16 @@ public class MovieEntityRepositoryImpl implements MovieEntityCustomRepository {
         String query = getFinalQuery(movieFilterParams, queryBuilder, params);
 
         return jdbcTemplate.query(query, params, new BeanPropertyRowMapper<>(MovieEntity.class));
+    }
+
+    public Long countMovies(MovieFilter movieFilterParams) {
+        StringBuilder queryBuilder = new StringBuilder(BASE_COUNT_QUERY);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+
+        addLeftJoins(movieFilterParams, queryBuilder);
+        addConditions(movieFilterParams, queryBuilder, params);
+
+        return jdbcTemplate.queryForObject(queryBuilder.toString(), params, Long.class);
     }
 
     private void addLeftJoins(MovieFilter movieFilterParams, StringBuilder queryBuilder) {
