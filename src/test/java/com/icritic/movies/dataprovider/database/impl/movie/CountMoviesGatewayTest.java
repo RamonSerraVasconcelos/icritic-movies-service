@@ -1,44 +1,36 @@
 package com.icritic.movies.dataprovider.database.impl.movie;
 
-import com.icritic.movies.core.model.Movie;
 import com.icritic.movies.core.model.MovieFilter;
 import com.icritic.movies.core.usecase.fixture.MovieFilterFixture;
-import com.icritic.movies.dataprovider.database.entity.MovieEntity;
-import com.icritic.movies.dataprovider.database.fixture.MovieEntityFixture;
 import com.icritic.movies.dataprovider.database.repository.MovieEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindAllMoviesGatewayTest {
+class CountMoviesGatewayTest {
 
     @InjectMocks
-    private FindAllMoviesGateway findAllMoviesGateway;
+    private CountMoviesGateway countMoviesGateway;
 
     @Mock
     private MovieEntityRepository movieEntityRepository;
 
     @Test
-    void givenExecution_thenReturnAllMovies() {
+    void givenExecution_thenReturnMovieCount() {
         MovieFilter movieFilter = MovieFilterFixture.load();
-        List<MovieEntity> movieEntities = List.of(MovieEntityFixture.load(), MovieEntityFixture.load());
 
-        when(movieEntityRepository.findByParams(movieFilter)).thenReturn(movieEntities);
+        when(movieEntityRepository.countMovies(movieFilter)).thenReturn(1L);
 
-        List<Movie> movies = findAllMoviesGateway.execute(movieFilter);
+        Long result = countMoviesGateway.execute(movieFilter);
 
-        verify(movieEntityRepository).findByParams(movieFilter);
-
-        assertThat(movies).isNotNull();
+        verify(movieEntityRepository).countMovies(movieFilter);
+        assertThat(result).isEqualTo(1L);
     }
 }

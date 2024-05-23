@@ -105,3 +105,6 @@ CREATE TRIGGER set_timestamp
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_set_timestamp();
 
+-- INDEXES
+CREATE INDEX movie_name_search_index ON movies USING GIN (to_tsvector('english', name));
+

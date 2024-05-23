@@ -1,6 +1,7 @@
 package com.icritic.movies.entrypoint.resource;
 
 import com.icritic.movies.core.model.Movie;
+import com.icritic.movies.core.model.MovieFilter;
 import com.icritic.movies.core.model.MovieRequestParams;
 import com.icritic.movies.core.model.Review;
 import com.icritic.movies.core.model.enums.ReviewLikeAction;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -122,8 +124,20 @@ public class MovieResource {
     }
 
     @GetMapping
-    public ResponseEntity<PageableMovieResponse> findAllMovies(Pageable pageable) {
-        Page<Movie> moviesPageables = findAllMoviesUseCase.execute(pageable);
+    public ResponseEntity<PageableMovieResponse> findAllMovies(Pageable pageable,
+                                                               @RequestParam(name = "name", required = false) String name,
+                                                               @RequestParam(name = "categories", required = false) List<Integer> categories,
+                                                               @RequestParam(name ="directors", required = false) List<Integer> directors,
+                                                               @RequestParam(name ="actors", required = false) List<Integer> actors) {
+        MovieFilter movieFilter = MovieFilter.builder()
+                .name(name)
+                .categories(categories)
+                .directors(directors)
+                .actors(actors)
+                .pageable(pageable)
+                .build();
+
+        Page<Movie> moviesPageables = findAllMoviesUseCase.execute(movieFilter);
 
         List<MovieResponseDto> moviesResponseDto = moviesPageables.getContent()
                 .stream()
