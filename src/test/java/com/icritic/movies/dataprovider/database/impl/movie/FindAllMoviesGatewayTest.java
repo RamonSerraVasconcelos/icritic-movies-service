@@ -1,7 +1,10 @@
 package com.icritic.movies.dataprovider.database.impl.movie;
 
 import com.icritic.movies.core.model.Movie;
+import com.icritic.movies.core.model.MovieFilter;
+import com.icritic.movies.core.usecase.fixture.MovieFilterFixture;
 import com.icritic.movies.dataprovider.database.entity.MovieEntity;
+import com.icritic.movies.dataprovider.database.fixture.MovieEntityFixture;
 import com.icritic.movies.dataprovider.database.repository.MovieEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -24,19 +28,16 @@ class FindAllMoviesGatewayTest {
     @Mock
     private MovieEntityRepository movieEntityRepository;
 
-    @Mock
-    private Pageable pageable;
-
-    @Mock
-    private Page<MovieEntity> pageableMovies;
-
     @Test
     void givenExecution_thenReturnAllMovies() {
-        when(movieEntityRepository.findAllByActiveOrderByIdAsc(pageable, true)).thenReturn(pageableMovies);
+        MovieFilter movieFilter = MovieFilterFixture.load();
+        List<MovieEntity> movieEntities = List.of(MovieEntityFixture.load(), MovieEntityFixture.load());
 
-        Page<Movie> movies = findAllMoviesGateway.execute(pageable);
+        when(movieEntityRepository.findByParams(movieFilter)).thenReturn(movieEntities);
 
-        verify(movieEntityRepository).findAllByActiveOrderByIdAsc(pageable, true);
+        List<Movie> movies = findAllMoviesGateway.execute(movieFilter);
+
+        verify(movieEntityRepository).findByParams(movieFilter);
 
         assertThat(movies).isNotNull();
     }
