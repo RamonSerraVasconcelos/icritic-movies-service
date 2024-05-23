@@ -65,8 +65,11 @@ public class MovieEntityRepositoryImpl implements MovieEntityCustomRepository {
         queryBuilder.append(" WHERE active = true");
 
         if (nonNull(movieFilterParams.getName())) {
+            String name = movieFilterParams.getName();
+            String trimmedName = name.substring(0, name.lastIndexOf(name.trim()) + name.trim().length()).replace(" ", " & ");
+
             queryBuilder.append(" AND to_tsvector(m.name) @@ to_tsquery(:name)");
-            params.addValue("name", movieFilterParams.getName());
+            params.addValue("name", trimmedName);
         }
 
         if (nonNull(movieFilterParams.getCategories()) && !movieFilterParams.getCategories().isEmpty()) {
