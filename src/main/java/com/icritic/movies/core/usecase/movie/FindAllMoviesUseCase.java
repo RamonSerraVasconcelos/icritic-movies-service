@@ -38,9 +38,11 @@ public class FindAllMoviesUseCase {
 
             List<Movie> movies = getMovies(movieFilter);
 
-            setMovieCategories(movies);
-            setMovieDirectors(movies);
-            setMovieActors(movies);
+            if (shouldCacheMovies) {
+                setMovieCategories(movies);
+                setMovieDirectors(movies);
+                setMovieActors(movies);
+            }
 
             Long totalMoviesCount = countMoviesUseCase.execute(movieFilter);
             Page<Movie> pageableMovies = new PageImpl<>(movies, movieFilter.getPageable(), totalMoviesCount);
